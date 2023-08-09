@@ -17,7 +17,7 @@ class Kernel {
         // this.read().then(console.log);
     }
 
-    run(code, resolve = console.log, reject = console.error) {
+    run(code, resolve = console.log, reject = error_handler) {
         this.shelter.then(shelter => {
             console.log("Executing:", code);
             shelter.captureR(code, this.options)
@@ -31,9 +31,9 @@ class Kernel {
 
                     return result.toJs()
                         .then(x => resolve({ result: Value(x), output: output }))
+                        .catch(error => resolve({ result: result, output: output }))
                 })
                 .catch(error => {
-                    console.log("An error has occurred while evaluating the input.");
                     reject(error);
                 })
         })
@@ -96,6 +96,12 @@ const Value = (obj) => {
 
     // Otherwise, return as is
     return obj;
+}
+
+
+const error_handler = (error) => {
+    console.log("Error: " + error.message);
+    return error;
 }
 
 
