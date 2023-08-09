@@ -1,31 +1,71 @@
 import { isRList } from 'https://webr.r-wasm.org/latest/webr.mjs';
-
+import { PubSub } from "./pubsub.js";
 
 class Kernel {
-    constructor(webR) {
+    constructor(webR, options) {
         this.webR = webR;
         this.shelter = new webR.Shelter();
+        this.options = Object.assign({
+            captureConditions: true,
+            captureStreams: true,
+            withAutoprint: true
+        }, options)
+
+        this.PubSub = new PubSub();
+
+        // this.buffer = "";
+        // this.read().then(console.log);
     }
 
-    run(code, callback) {
-        console.log("run:", code);
-        // Send code to R kernel
+    run(code, resolve = console.log, reject = console.error) {
         this.shelter.then(shelter => {
-            shelter.captureR(code).then(code_result => {
-                const { result, output } = code_result;
-                if (isRList(result)) {  // Extract value from webR RObject
-                    result
-                        .toObject({ depth: 0 })
-                        .then(R_obj => {
-                            let JS_obj = toObject(R_obj);
-                            return callback(JS_obj);
-                        })
-                } else {
-                    result.toJs().then(callback);  // Default
-                }
-            })
+            console.log("Executing:", code);
+            shelter.captureR(code, this.options)
+                .then(code_result => {
+                    let { result, output } = code_result;
+
+                    if (isRList(result)) {
+                        return result.toObject({ depth: 0 })
+                            .then(x => resolve({ result: Value(x), output: output }))
+                    }
+
+                    return result.toJs()
+                        .then(x => resolve({ result: Value(x), output: output }))
+                })
+                .catch(error => {
+                    console.log("An error has occurred while evaluating the input.");
+                    reject(error);
+                })
         })
     }
+
+    interrupt() {
+        this.webR.interrupt();
+    }
+
+    // read() {
+    //     // console.log("Enter");
+    //     this.buffer = "";
+
+    //     let readUntilPrompt = output => {
+    //         // console.log("Reading");
+    //         this.buffer += output.data + "\n";
+    //         if (output && output.type != "prompt") {
+    //             return this.webR.read().then(readUntilPrompt, readComplete);
+    //         } else {
+    //             return readComplete();
+    //         }
+    //     }
+
+    //     let readComplete = () => {
+    //         // console.log("Read complete.");
+    //         return this.buffer;
+    //     }
+
+    //     return this.webR.read()
+    //         .then(readUntilPrompt, readComplete)
+    //         .catch(error => console.log("An error has occurred while reading the output.", error));
+    // }
 }
 
 
@@ -35,26 +75,26 @@ At the moment, 'webr' returns a leaf node as an object with keys 'type', 'names'
 'values'. For example, 2 is returned as {type: 'double', names: [], values: [2]}.
 The function unpack the data for consumption by the animate function.
 */
-const toObject = (obj) => {
+const Value = (obj) => {
     // If Array, loop through and convert each element
     if (Array.isArray(obj)) {
-        return obj.map(toObject);
+        return obj.map(Value);
     }
 
     // if Object, loop through and convert each value
     if (typeof obj === 'object' && obj !== null) {
         // if it has keys 'type', 'names' and 'values', then extract the values
         if (obj.hasOwnProperty('type') && obj.hasOwnProperty('names') && obj.hasOwnProperty('values')) {
-            return obj.values.map(toObject);
+            return obj.values.map(Value);
         } else {
             return Object.keys(obj).reduce((acc, key) => {
-                acc[key] = toObject(obj[key]);
+                acc[key] = Value(obj[key]);
                 return acc;
             }, {});
         }
     }
 
-    // Otherwise, return the value
+    // Otherwise, return as is
     return obj;
 }
 
