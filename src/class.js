@@ -1,7 +1,0 @@
-class Channel {
-    constructor() {
-    }
-
-    write() {
-    }
-}
