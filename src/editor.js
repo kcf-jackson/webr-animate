@@ -22,9 +22,10 @@ class Editor {
         }
         // - Create the submit button
         let submit_btn = document.createElement("button");
-        submit_btn.innerText = "Submit";
+        submit_btn.innerText = "source";
         submit_btn.addEventListener("click", () => {
-            this.PubSub.publish("submit", this.editor.getValue());
+            let code = this.editor.getValue().replaceAll("\r\n", "\n");
+            this.PubSub.publish("submit", code);
         })
         // - Append the elements to the parent
         container.appendChild(div);
@@ -43,7 +44,8 @@ class Editor {
             name: 'submit',
             bindKey: { win: 'Ctrl-Shift-S', mac: 'Command-Shift-S' },
             exec: () => {
-                this.PubSub.publish("submit", this.editor.getValue());
+                let code = this.editor.getValue().replaceAll("\r\n", "\n");
+                this.PubSub.publish("submit", code);
             }
         });
     }

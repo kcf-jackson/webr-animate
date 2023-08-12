@@ -1,115 +1,135 @@
 import { PubSub } from "./pubsub.js";
 import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 
+
 class Console {
-    constructor(el, options) {
+    constructor(el, options = {}) {
         this.el = el;
-        this.options = options;
+        this.options = Object.assign({
+            prefix: "> ",
+            echo: true,
+            newline: "\r\n"
+        }, options);
         this.PubSub = new PubSub();
+        this.history = [];
 
         this.terminal = new Terminal();
         this.terminal.open(select(this.el));
         this.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-        this.write('\n> ')
-        this.current_line = "> ";
 
-        this._webR = new WebR().init();
+
+        // prefix for new lines
+        this.newline = this.options.newline;
+        this.prefix = this.options.prefix;
+        this.write(this.newline);
+        this.write(this.prefix);
+        this.current_line = this.prefix;
+
 
         // Enable hotkeys
         this.terminal.onKey(({ key, domEvent: ev }) => {
             if (ev.keyCode == 13) {  // Enter
-                let command = this.current_line.slice(2);
-                let that = this;
-                this.PubSub.publish("input", {
-                    command: command,
-                    valid: (code_result) => {
-                        let { result, output } = code_result;
-                        console.log(result);
-
-                        if (output.length == 0) {
-                            that.write("\n> ");
-                            that.current_line = "> ";
-                            return;
-                        }
-
-                        output.forEach(x => {
-                            that.write("\n");
-                            that.write(x.data.trimEnd());
-                        });
-                        that.write("\n> ");
-                        that.current_line = "> ";
-                    },
-                    invalid: (error) => {
-                        if (error.message.includes("unexpected end of input")) {
-                            that.current_line += "\n";
-                            that.write("\n+ ");
-                            return;
-                        }
-
-                        if (error.message.includes("unexpected")) {
-                            that.current_line = "> ";
-                            that.write("\n");
-                            that.write(error.message.replace("<text>:", "Error: "));
-                            that.write("\n> ");
-                            return;
-                        }
-
-                        that.current_line = "> ";
-                        that.write("\n");
-                        that.write("Error: " + error.message);
-                        that.write("\n> ");
-                    }
-                })
+                let command = this.current_line.slice(this.prefix.length);
+                this.PubSub.publish("input", command);
             } else if (ev.keyCode == 8) {  // Backspace
-                if (this.current_line.length > 2) {
+                if (this.current_line.length > this.prefix.length) {
                     this.current_line = this.current_line.slice(0, -1);
                     this.write("\b \b");
                 }
-            } else if (ev.keyCode == 37 || ev.keyCode == 38 || ev.keyCode == 39 || ev.keyCode == 40) {
+            } else if (ev.keyCode == 37 || ev.keyCode == 38 ||
+                ev.keyCode == 39 || ev.keyCode == 40) {
             } else {
                 this.current_line += key;
                 this.write(key);
             }
         })
 
+        // Enable paste
         this.terminal.textarea.addEventListener('paste', (ev) => {
             let data = ev.clipboardData.getData('text/plain');
-            this.stdin(data);
+            // this.write(data);
         })
     }
 
-    // stdin(x) {
-    //     let lines = x.split("\n");
-
-    //     if (lines.length == 1 && lines[0] == x) {
-    //         this.current_line += x;
-    //         this.write(x);
-    //         return;
-    //     }
-
-    //     lines.forEach(command => {
-    //         this.current_line += command;
-    //         this.write(command);
-    //         let that = this;
-    //         this.PubSub.publish("input", {
-    //             command: command,
-    //             valid: (result) => {
-    //                 that.current_line = "> ";
-    //                 that.write("\n> ");
-    //                 that.stdin(result);
-    //             },
-    //             invalid: () => {
-    //                 that.current_line += "\n";
-    //                 that.write("\n+ ");
-    //             }
-    //         })
-    //     })
-    // }
-
     write(x) {
-        x = x.replaceAll("\n", "\r\n");
         this.terminal.write(x);
     }
+
+    paste(x) {
+
+    }
+}
+
+
+class DebugConsole {
+    constructor(options = {}) {
+        this.options = Object.assign({
+            prefix: "", echo: true, newline: null
+        }, options);
+        this.newline = this.options.newline;
+        this.prefix = this.options.prefix;
+        this.current_line = this.prefix;
+    }
+
+    write(x) {
+        x && console.log(x);
+    }
+}
+
+
+function echoInput(input) {
+    if (this.options.echo) {
+        this.write(input);
+        this.write(this.newline);
+        this.write(this.prefix);
+        this.current_line = this.prefix;
+    }
+}
+
+
+function writeResult(exec_result) {
+    let { result, output } = exec_result;
+    // console.log(result);
+
+    if (output.length == 0) {
+        this.write(this.newline);
+        this.write(this.prefix);
+        this.current_line = this.prefix;
+        return;
+    }
+
+    output.forEach(x => {
+        this.write(this.newline);
+        this.write(x.data.trimEnd());
+    });
+    this.write(this.newline);
+    this.write(this.prefix);
+    this.current_line = this.prefix;
+}
+
+
+function writeError(error) {
+    if (error.message.includes("unexpected end of input")) {
+        this.current_line += "\n";
+        this.write(this.newline);
+        this.write("+ ");
+        return;
+    }
+
+    if (error.message.includes("unexpected")) {
+        this.current_line = this.prefix;
+        this.write(this.newline);
+        this.write(error.message.replace("<text>:", "Error: "));
+        this.write(this.newline);
+        this.write(this.prefix);
+        return;
+    }
+
+    this.current_line = this.prefix;
+    this.write(this.newline);
+    this.write("Error: " + error.message);
+    this.write(this.newline);
+    this.write(this.prefix);
 }
 
 
@@ -119,5 +139,9 @@ const select = (x, n = 0) => n == -1 ?
 
 
 export {
-    Console
+    Console,
+    DebugConsole,
+    writeResult,
+    writeError,
+    echoInput,
 }
