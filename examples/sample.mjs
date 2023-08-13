@@ -14,6 +14,7 @@ let editor = new Editor("#editor", { width: "900px", height: "300px" });
 
 import { Console, DebugConsole, writeResult, writeError, echoInput } from '../src/terminal.js';
 let term = new Console("#terminal", { echo: false });
+term.terminal.resize(80, 10);
 // let dterm = new DebugConsole();
 
 
@@ -55,10 +56,35 @@ channel.on(term, "input", {
         echoInput.bind(cterm)(code);
 
         this.run(code)
+            .then(catchAnimate.bind(device))
             .then(writeResult.bind(cterm))
             .catch(writeError.bind(cterm));
     }
 })
+
+
+editor.editor.insert(`animate$Message <- function(type, message) {
+    list(type = type, message = message)
+}
+animate$send <- function(msg) {
+    print(msg)
+}
+animate$data <- list()
+animate$svg <- function(width = 800, height = 600, ...) {
+    msg <- animate$Message("fn_init_svg", list(width = width, height = height, ...))
+    l <- length(animate$data)
+    animate$data[[l + 1]] <- msg
+    animate$send(paste("animate::svg", l, sep = "-"))
+}
+animate$points <- function(x, y, ...) {
+    msg <- animate$Message("fn_points", list(x = x, y = y, ...))
+    l <- length(animate$data)
+    animate$data[[l + 1]] <- msg
+    animate$send(paste("animate::points", l, sep = "-"))
+}
+animate$svg(id = "svg-1", width = 500, height = 300, root = "#plot")
+animate$points(1:10, 1:10, id = 1:10)  
+`)
 
 
 

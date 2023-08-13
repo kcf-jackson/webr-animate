@@ -1,5 +1,5 @@
 animate$Message <- function(type, message) {
-  list(package = "animate", type = type, message = message)
+  list(type = type, message = message)
 }
 animate$send <- function(msg) {
   print(msg)
@@ -7,16 +7,18 @@ animate$send <- function(msg) {
 animate$data <- list()
 animate$svg <- function(width = 800, height = 600, ...) {
   msg <- animate$Message("fn_init_svg", list(width = width, height = height, ...))
-  animate$data[[length(animate$data) + 1]] <- msg
-  animate$send("animate::svg")
+  l <- length(animate$data)
+  animate$data[[l + 1]] <- msg
+  animate$send(paste("animate::svg", l, sep = "-"))
 }
 animate$points <- function(x, y, ...) {
   msg <- animate$Message("fn_points", list(x = x, y = y, ...))
-  animate$data[[length(animate$data) + 1]] <- msg
-  animate$send("animate::points")
+  l <- length(animate$data)
+  animate$data[[l + 1]] <- msg
+  animate$send(paste("animate::points", l, sep = "-"))
 }
-animate$svg(id = "my-svg", width = 500, height = 300)
-aniamte$points(1:10, 1:10)
+animate$svg(id = "svg-1", width = 500, height = 300, root = "#plot")
+animate$points(1:10, 1:10)
 
 # for (i in 1:3) {
 #   animate$points(1:3, 1:3 + i)
