@@ -107,24 +107,71 @@ device$delete = function(id = NULL) {
 # Need new channel
 device$event = function(selector, event_type, callback) {
   event_name <- paste0(selector, ":", event_type)
-  self$event_handlers[[event_name]] <- callback
+  device$event_handlers[[event_name]] <- callback
   device$send(device$Message("fn_event", list(selector = selector, event = event_type, event_name = event_name)))
 }
 
 device$chain = function(callback) {
-  event_name <- paste0("chained-transition-", private$event_counter)
-  private$event_counter <- private$event_counter + 1
+  # event_name <- paste0("chained-transition-", private$event_counter)
+  # private$event_counter <- private$event_counter + 1
   device$event_handlers[[event_name]] <- callback
   param <- list(event = "end", event_name = event_name)
   param
 }
 
-device$simple_event = function(selector, event_type, method, param) {
-  device$send(device$Message("fn_simple_event", list(selector = selector,
-                                            event = event_type,
-                                            method = method,
-                                            param = param)))
+
+device$unflattenObject <- function(flatObj) {  
+  nested_env_to_list <- function(x) {
+    if (!is.environment(x)) {
+      return(x)
+    } else {
+      for (v in names(x)) {
+        x[[v]] <- nested_env_to_list(x[[v]])
+      }
+      return(as.list(x))
+    }
+  }
+  
+  nestedObj <- new.env()
+  
+  for (key in names(flatObj)) {
+    value <- flatObj[[key]]
+    
+    keys <- strsplit(key, '.', fixed = TRUE)[[1]]
+    if (length(keys) == 1) {
+      nestedObj[[key]] <- value
+      next
+    }
+    
+    current <- nestedObj
+    for (i in seq_along(keys)) {i
+      cur_key <- keys[i]
+      if (i == length(keys)) {
+        current[[cur_key]] <- value
+      } else {
+        if (!(cur_key %in% names(current))) {
+          current[[cur_key]] <- new.env()
+        }
+        current <- current[[cur_key]]
+      }
+    }
+  }
+  
+  return(nested_env_to_list(nestedObj))
 }
+# # Example flattened object
+# flattened <- list(
+#   "person.name.first" = "John",
+#   "person.name.last" = "Doe",
+#   "person.age" = 30,
+#   "address.city" = "New York",
+#   "address.zip" = "10001"
+# )
+# nested <- unflattenObject(flattened)
+# print(flattened)
+# print(nested)
+
+
 
 
 # # Examples

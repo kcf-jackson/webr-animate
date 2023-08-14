@@ -1,5 +1,5 @@
 import { PubSub } from "./pubsub.js";
-import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
+import { blue } from "./utils.js";
 
 
 class Console {
@@ -14,17 +14,18 @@ class Console {
         this.history = [];
         this.history_index = 0;
 
-        this.terminal = new Terminal();
-        this.terminal.open(select(this.el));
-        this.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-
-
-        // prefix for new lines
         this.newline = this.options.newline;
         this.prefix = this.options.prefix;
+        this.current_line = this.prefix;
+        this.linebreak = -1;
+
+        this.terminal = new Terminal();
+        this.terminal.open(select(this.el));
+        this.write('R package "animate" ported to WebR.');
+        this.write('\n');
+        this.write(blue('The variables "device" and "io" are reserved. Please avoid writing to them.'));
         this.write(this.newline);
         this.write(this.prefix);
-        this.current_line = this.prefix;
 
 
         // Enable hotkeys
@@ -37,7 +38,14 @@ class Console {
                     this.current_line = this.prefix;
                     return;
                 }
-                this.history.push(command);
+                if (this.linebreak >= 0) {
+                    let new_part_only = this.current_line.slice(this.linebreak);
+                    console.log(new_part_only);
+                    this.linebreak = -1;
+                    this.history.push(new_part_only);
+                } else {
+                    this.history.push(command);
+                }
                 this.history_index = this.history.length;
                 // console.log(this.history);
                 this.PubSub.publish("input", command);
@@ -62,7 +70,8 @@ class Console {
                             return;
                         }
                     }
-                    this.current_line = this.prefix + this.history[this.history_index];
+                    this.current_line = (this.linebreak >= 0 ? "+ " : this.prefix) +
+                        this.history[this.history_index];
                     this.write("\x1b[2K\r");
                     this.write(this.current_line);
                 }
@@ -99,7 +108,8 @@ class Console {
     }
 
     paste(x) {
-
+        this.write(x);
+        this.current_line += x;
     }
 }
 
@@ -207,6 +217,7 @@ function writeResult(exec_result) {
 function writeError(error) {
     if (error.message.includes("unexpected end of input")) {
         this.current_line += "\n";
+        (typeof this.linebreak == 'number') && (this.linebreak = this.current_line.length);
         this.write(this.newline);
         this.write("+ ");
         return;
@@ -215,9 +226,7 @@ function writeError(error) {
     if (error.message.includes("unexpected")) {
         this.current_line = this.prefix;
         this.write(this.newline);
-        this.write(
-            error.message.replace("<text>:", "Error: ")
-        );
+        this.write(error.message.replace("<text>:", "Error: "));
         this.write(this.newline);
         this.write(this.prefix);
         return;
