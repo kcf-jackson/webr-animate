@@ -9,11 +9,14 @@
 </head>
 <body>
     <script type="text/javascript">
-        import('https://webr.r-wasm.org/v0.1.0/webr.mjs').then(
+        import('https://webr.r-wasm.org/latest/webr.mjs').then(
             async ({ WebR }) => {
                 const webR = new WebR();
                 await webR.init();
                 globalThis.webR = webR;
+
+                const shelter = await new webR.Shelter();
+                globalThis.shelter = shelter;
 
                 let result = await webR.evalR('rnorm(10,5,1)');
                 let output = await result.toArray();

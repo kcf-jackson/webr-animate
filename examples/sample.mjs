@@ -14,7 +14,7 @@ let editor = new Editor("#editor", { width: "900px", height: "300px" });
 
 import { Console, DebugConsole, writeResult, writeError, echoInput } from '../src/terminal.js';
 let term = new Console("#terminal", { echo: false });
-term.terminal.resize(80, 10);
+term.terminal.resize(80, 16);
 // let dterm = new DebugConsole();
 
 
@@ -24,7 +24,7 @@ let channel = new Channel();
 
 import { Animate, catchAnimate } from '../src/animate.js';
 let device = new Animate(await new webR.REnvironment({}));
-await webR.objs.globalEnv.bind('animate', device.env);
+await webR.objs.globalEnv.bind('device', device.env);
 
 
 channel.on(editor, "submit", {
@@ -63,28 +63,11 @@ channel.on(term, "input", {
 })
 
 
-editor.editor.insert(`animate$Message <- function(type, message) {
-    list(type = type, message = message)
-}
-animate$send <- function(msg) {
-    print(msg)
-}
-animate$data <- list()
-animate$svg <- function(width = 800, height = 600, ...) {
-    msg <- animate$Message("fn_init_svg", list(width = width, height = height, ...))
-    l <- length(animate$data)
-    animate$data[[l + 1]] <- msg
-    animate$send(paste("animate::svg", l, sep = "-"))
-}
-animate$points <- function(x, y, ...) {
-    msg <- animate$Message("fn_points", list(x = x, y = y, ...))
-    l <- length(animate$data)
-    animate$data[[l + 1]] <- msg
-    animate$send(paste("animate::points", l, sep = "-"))
-}
-animate$svg(id = "svg-1", width = 500, height = 300, root = "#plot")
-animate$points(1:10, 1:10, id = 1:10)  
-`)
+// Define the animate bridging functions
+fetch('../package/R/draft.R')
+    .then(response => response.text())
+    .then(x => x.replaceAll("\r\n", "\n"))
+    .then(text => webR.evalR(text))
 
 
 

@@ -45,7 +45,9 @@ const get_id = input => {
 
 function catchAnimate(x) {  // x := {result, output, error}
     if (x.result) {
+        console.log(x)
         x.output
+            .filter(x => x.type == "stdout")
             .map(x => x.data)
             .filter(x => x.includes('animate::'))
             .forEach(x => this.update(x));
