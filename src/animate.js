@@ -18,7 +18,7 @@ class Animate {
                         keyCode: d3.event.keyCode,
                         mouse: d3.mouse(this)
                     };
-                    // console.log(result);
+                    console.log(result);
                     (new webR.RList(flattenObject(result)))
                         .then(x => webR.objs.globalEnv.bind('io', x))
                         .then(() => webR.evalR('io = device$unflattenObject(io)'))
@@ -90,7 +90,6 @@ function getPointerEventData(event) {
         screenY: event.screenY,
         pageX: event.pageX,
         pageY: event.pageY,
-        target: event.target,
         button: event.button,
         buttons: event.buttons,
         altKey: event.altKey,

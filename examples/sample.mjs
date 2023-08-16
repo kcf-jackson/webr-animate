@@ -8,8 +8,10 @@ import { Kernel } from '../src/kernel.mjs';
 let kernel = new Kernel(webR);
 
 
-import { Editor } from '../src/editor.js';
-let editor = new Editor("#editor", { width: "900px", height: "300px" });
+import { Editor, IntegratedEditor } from '../src/editor.js';
+// let editor = new Editor("#editor", { width: "900px", height: "300px" });
+let ieditor = new IntegratedEditor("#editor");
+let editor = ieditor.editor;
 
 
 import { Console, DebugConsole, writeResult, writeError, echoInput } from '../src/terminal.js';
@@ -103,6 +105,7 @@ fetch('../package/R/webr-example.R')
 
 
 globalThis.kernel = kernel;
+globalThis.ieditor = ieditor;
 globalThis.editor = editor;
 globalThis.term = term;
 globalThis.channel = channel;

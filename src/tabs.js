@@ -1,0 +1,7 @@
+class TabsManager {
+
+}
+
+export {
+    TabsManager
+}
