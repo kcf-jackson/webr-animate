@@ -1,4 +1,4 @@
-import { PubSub } from "./pubsub";
+import { PubSub } from "./pubsub.js";
 
 class FilesManager {
     constructor(dir = "/home/web_user") {
@@ -8,7 +8,8 @@ class FilesManager {
         this._home_directory = dir;  // once set, it cannot be changed
         this.PubSub.subscribe("new-file", x => console.log("New file:", x));
         this.PubSub.subscribe("delete-file", x => console.log("Delete file:", x));
-        this.PubSub.subscribe("rename-file", ({ old_name, new_name }) => console.log("Rename file:", old_name, "=>", new_name));
+        this.PubSub.subscribe("rename-file", ({ from: old_name, to: new_name }) => console.log("Rename file:", old_name, "=>", new_name));
+        this.PubSub.subscribe("open-file", x => console.log("Open file:", x));
     }
 
     _addFile(file) {
@@ -53,14 +54,14 @@ class FilesManager {
     async deleteFile(path, home = true) {
         let full_path = home ? file_path(this._home_directory, path) : path;
         await webR.FS.unlink(full_path);
-        this._deleteFile(full_path);
+        this._removeFile(full_path);
         this.PubSub.publish("delete-file", full_path);
     }
 
     async openFile(path, raw = false, home = true) {
         let full_path = home ? file_path(this._home_directory, path) : path;
         let content = await webR.FS.readFile(full_path);
-        let result = raw ? content : new TextDecoder.decode(content);
+        let result = raw ? content : (new TextDecoder).decode(content);
         this.PubSub.publish("open-file", result);
         return result;
     }
@@ -71,7 +72,17 @@ class FilesManager {
         await this.deleteFile(from, home);
 
         this._renameFile(from, to);
-        this.PubSub.publish("rename-file", { from, to });
+        this.PubSub.publish("rename-file", { from: from, to: to });
+    }
+
+    async fileExists(path, home = true) {
+        let result;
+        try {
+            result = await this.listFiles(path);
+            return result.length > 0;
+        } catch (e) {
+            return false;
+        }
     }
 }
 
@@ -99,6 +110,13 @@ const flattenPaths = (node, currentPath = '', depth = 9999) => {
 }
 
 
+const randomString = (n = 30) => {
+    let data = ["\"" + Math.random().toString(36).substring(2, n) + "\""];
+    return (new TextEncoder()).encode(data);
+}
+
+
 export {
-    FilesManager
+    FilesManager,
+    randomString,
 }

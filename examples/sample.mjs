@@ -11,7 +11,7 @@ let kernel = new Kernel(webR);
 import { Editor, IntegratedEditor } from '../src/editor.js';
 // let editor = new Editor("#editor", { width: "900px", height: "300px" });
 let ieditor = new IntegratedEditor("#editor");
-let editor = ieditor.editor;
+// let editor = ieditor.editor;
 
 
 import { Console, DebugConsole, writeResult, writeError, echoInput } from '../src/terminal.js';
@@ -32,27 +32,27 @@ await webR.objs.globalEnv.bind('device', device.env);
 import { blue } from '../src/utils.js'
 
 
-channel.on(editor, "submit", {
-    subscriber: kernel,
-    callback: function (code) {
-        let cterm = term, cache;
-        // Handle non-empty current line
-        cterm.write('\x1b[2K\r');
-        cterm.write(cterm.prefix);
-        cterm.write('source("~/.active-document")');
-        cache = cterm.current_line.slice(cterm.prefix.length);
+// channel.on(editor, "submit", {
+//     subscriber: kernel,
+//     callback: function (code) {
+//         let cterm = term, cache;
+//         // Handle non-empty current line
+//         cterm.write('\x1b[2K\r');
+//         cterm.write(cterm.prefix);
+//         cterm.write('source("~/.active-document")');
+//         cache = cterm.current_line.slice(cterm.prefix.length);
 
-        // console.log(JSON.stringify(code));
-        this.run(code)
-            .then(catchAnimate.bind(device))
-            .then(writeResult.bind(cterm))
-            .catch(writeError.bind(cterm))
-            .finally(() => {
-                cterm.current_line = cterm.prefix + cache;
-                cterm.write(cache)
-            });
-    }
-})
+//         // console.log(JSON.stringify(code));
+//         this.run(code)
+//             .then(catchAnimate.bind(device))
+//             .then(writeResult.bind(cterm))
+//             .catch(writeError.bind(cterm))
+//             .finally(() => {
+//                 cterm.current_line = cterm.prefix + cache;
+//                 cterm.write(cache)
+//             });
+//     }
+// })
 
 channel.on(term, "input", {
     subscriber: kernel,
@@ -96,17 +96,17 @@ fetch('../package/R/webr-animate.R')
     .then(x => x.replaceAll("\r\n", "\n"))
     .then(text => webR.evalR(text))
 
-fetch('../package/R/webr-example.R')
-    .then(response => response.text())
-    .then(x => x.replaceAll("\r\n", "\n"))
-    .then(text => editor.editor.insert(text))
+// fetch('../package/R/webr-example.R')
+//     .then(response => response.text())
+//     .then(x => x.replaceAll("\r\n", "\n"))
+//     .then(text => editor.editor.insert(text))
 
 
 
 
 globalThis.kernel = kernel;
 globalThis.ieditor = ieditor;
-globalThis.editor = editor;
+// globalThis.editor = editor;
 globalThis.term = term;
 globalThis.channel = channel;
 globalThis.webR = webR;

@@ -1,0 +1,45 @@
+.files-panel-header, .files-panel-header > span {
+    cursor: default;
+    user-select: none;
+}
+
+.file-name {
+    cursor: pointer;
+    user-select: none;
+}
+
+.tab {
+    cursor: default;
+    user-select: none;
+}
+
+.tab.active {
+    background-color: gainsboro;
+}
+
+
+.container {
+    display: grid;
+}
+
+
+.integrated-editor {
+    display: grid;
+    grid-template-columns: 1fr 8fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "files-panel editor-panel";
+}
+
+.files-panel {
+    grid-area: files-panel;
+}
+
+.editor-panel {
+    grid-area: editor-panel;
+}
+
+
+.tabs-panel-body {
+    display: flex;
+    flex-direction: row;
+}
