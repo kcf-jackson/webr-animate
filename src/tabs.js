@@ -84,7 +84,9 @@ class TabsManager {
         // - create a new active tab header
         let tab_header = text_to_dom(`<div class="tab active">
             <span>${name}</span>
-            <button class="btn btn-sm btn-primary" id="btn-close-tab" data-tab-name="${name}">X</button>
+            <button class="btn btn-sm btn-primary" id="btn-close-tab" data-tab-name="${name}">
+            <i class="fas fa-times cross"></i>
+            </button>
         </div>`);
 
         tab_header
@@ -118,13 +120,12 @@ class TabsManager {
 
 
         // - set the new tab as active
-        this.setActiveTab(this.length - 1);
+        this.setActiveTab(name);
     }
 
     closeTab(name) {
         let idx = this.findTabIndex(name);
-
-        console.log(this.open_tabs[idx]);
+        if (idx === -1) return;
 
         // remove the tab header from the tabs panel
         this.open_tabs[idx].header.remove();
@@ -132,18 +133,23 @@ class TabsManager {
         // remove the tab body and editor from the editors panel
         this.open_tabs[idx].body.root.remove();
         this.open_tabs.splice(idx, 1);
+        if (idx < this.active_tab) {
+            this.active_tab--;
+        }
 
         // set the active tab to the last one
         if (idx == this.active_tab) {
-            (idx == this.length) && (idx--);
-            if (idx < this.length) {
-                let last_tab = this.open_tabs[idx].name;
-                this.setActiveTab(last_tab);
+            if (idx >= this.length) {
+                idx--;
             }
+            if (idx == -1) return;
+
+            let last_tab = this.open_tabs[idx].name;
+            this.setActiveTab(last_tab);
         }
     }
 
-    async setActiveTab(name) {
+    setActiveTab(name) {
         let idx = this.findTabIndex(name);
         if (idx === -1) return;
         this.active_tab = idx;

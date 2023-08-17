@@ -30,7 +30,9 @@ class IntegratedEditor {
         div.innerHTML = `
             <div class="files-panel-header">
                 <span>Files</span>
-                <button class="btn btn-sm btn-primary" id="btn-new-file">New</button>
+                <button class="btn btn-sm btn-primary" id="btn-new-file">
+                <i class="fas fa-plus"></i>
+                </button>
             </div>
             <div class="files-panel-body">
             </div>
@@ -60,12 +62,14 @@ class IntegratedEditor {
         let div = document.createElement("div");
         div.className = "file";
 
-        let filename = `script_${this._file_counter++}.R`;
+        let filename = `script-${this._file_counter++}.R`;
         div.setAttribute("data-file-name", filename);
 
         div.innerHTML = `
             <span class="file-name">${filename}</span>
-            <button class="btn btn-sm btn-primary btn-close-file">x</button>
+            <button class="btn btn-sm btn-primary btn-close-file">
+            <i class="fas fa-times cross"></i>
+            </button>
         `;
 
         div.querySelector(".btn-close-file")
@@ -84,14 +88,14 @@ class IntegratedEditor {
     }
 
     async deleteFileEvent(ev) {
-        let label = ev.target.parentElement;
+        let label = ev.target.closest(".file");
         let filename = label.getAttribute("data-file-name");
         label.remove();
         await this.fs.deleteFile(filename);
     }
 
     async openFileEvent(ev) {
-        let tab = ev.target.parentElement;
+        let tab = ev.target.closest(".file");
         let filename = tab.getAttribute("data-file-name");
         let content = await this.fs.openFile(filename);
         await this.tabs.openTab(filename, content);
@@ -126,14 +130,6 @@ class IntegratedEditor {
             await this.fs.renameFile(old_filename, filename);
             this.tabs.renameTab(old_filename, filename);
         });
-    }
-
-
-    // Interact with the file system
-
-
-    // Interact with the editor
-    async setActiveTab(tab) {
     }
 }
 
