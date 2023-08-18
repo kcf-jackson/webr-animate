@@ -324,7 +324,7 @@ class Editor {
 
 
         // Create the editor in the div container
-        this.editor = ace.edit(this.id);
+        this.editor = ace.edit(this.id, { wrap: true });
         this.editor.setTheme("ace/theme/monokai");
         this.editor.session.setMode("ace/mode/r");
         this.editor.setFontSize("16px");
