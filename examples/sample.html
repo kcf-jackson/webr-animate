@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>WebR Test Console</title>
+    <title>webR❤️animate</title>
     <script src="./assets/animate/animate.js"></script>
     <script src="./assets/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <link href="../node_modules/xterm/css/xterm.css" rel="stylesheet"/>
@@ -12,9 +12,23 @@
     <script type="module" src="sample.mjs"></script>
     <style> #plot{ outline: none } </style>
     <div class="container">
-      <div id="plot" tabindex="0"></div>
+      <div id="plot" tabindex="0">
+        <div id="fullscreen" onclick="toggleFullScreen()">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </div>
+      </div>
       <div id="terminal"></div>
       <div id="editor"></div>
     </div>
+    <script>
+      const toggleFullScreen = () => {
+        const plot = document.getElementById('plot');
+        if (!document.fullscreenElement) {
+          plot.requestFullscreen();
+        } else {
+          document.exitFullscreen && document.exitFullscreen();
+        }
+      }
+    </script>
   </body>
 </html>

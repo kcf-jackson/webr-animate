@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -5,7 +9,6 @@ html, body {
     font-size: 14px;
     color: rgb(50, 50, 50);
     background-color: rgb(240, 240, 240);
-    box-sizing: border-box;
 }
 
 .container {
@@ -29,6 +32,7 @@ html, body {
 }
 
 #plot {
+    background-color: white;
     grid-area: plot;
     overflow: hidden;
     display: flex;
@@ -41,7 +45,7 @@ html, body {
 
 .integrated-editor {
     display: grid;
-    grid-template-columns: 1fr 8fr;
+    grid-template-columns: 1fr 5fr;
     grid-template-rows: 1fr;
     grid-template-areas: "files-panel editor-panel";
 }
@@ -49,17 +53,50 @@ html, body {
 .files-panel {
     grid-area: files-panel;
     padding: 8px;
-    min-width: 120px;
+    min-width: max-content;
+    max-height: 50vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.files-panel-body {
+    overflow-y: auto;
+    /* scrollbar-width: none; */
 }
 
 .editor-panel {
     grid-area: editor-panel;
+    max-height: 50vh;
 }
 
+.tabs-manager {
+    height: 100%;
+}
 
 .tabs-panel-body {
     display: flex;
     flex-direction: row;
+    overflow: auto;
+}
+
+.tabs-panel-body::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.tab {
+    cursor: default;
+    user-select: none;
+    padding: 4px 4px 4px 10px;
+    border-radius: 6px 6px 0px 0px;
+    min-width: fit-content;
+}
+
+.tab:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+.tab.active {
+    background-color: gainsboro;
 }
 
 
@@ -90,24 +127,62 @@ html, body {
 }
 
 
+.editor-container button {
+    margin: 4px;
+}
 
+dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    z-index: 100;
+}
 
-.tab {
-    cursor: default;
+dialog div.loader {
+    padding: 4px;
+}
+
+dialog button.btn-close {
+    margin: 4px;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+dialog button.btn-load {
+    cursor: pointer;
     user-select: none;
-    padding: 4px 4px 4px 10px;
-    border-radius: 6px 6px 0px 0px;
+    margin: 4px;
 }
 
-.tab:hover {
-    background-color: rgb(240, 240, 240);
-}
-
-.tab.active {
-    background-color: gainsboro;
-}
-
-button {
+.integrated-editor button.btn, dialog button.btn-close {
     background-color: transparent;
     border: none;
+}
+
+i:hover {
+    color: gray;
+}
+
+
+i.fa-check {
+    color: green;
+    margin: 0px 4px;
+}
+
+i.fa-check:hover {
+
+}
+
+
+#fullscreen {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 4px;
+    margin: 12px;
+    font-size: x-large;
+    cursor: pointer;
+    user-select: none;
 }

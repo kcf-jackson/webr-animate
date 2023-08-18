@@ -111,6 +111,30 @@ class Console {
         this.write(x);
         this.current_line += x;
     }
+
+    resizeRows(height) {
+        let that = this;
+        function fit_n_rows(height) {
+            const cellHeight = that.terminal._core._renderService.dimensions.css.cell.height;
+            return Math.floor(height / cellHeight);
+        }
+        let available_height = height ||
+            parse_px(window.getComputedStyle(select(this.el)).height);
+        let cols = this.terminal.cols;
+        this.terminal.resize(cols, fit_n_rows(available_height))
+    }
+
+    resizeCols(width) {
+        let that = this;
+        function fit_n_cols(width) {
+            const cellWidth = that.terminal._core._renderService.dimensions.css.cell.width;
+            return Math.floor(width / cellWidth);
+        }
+        let available_width = width ||
+            parse_px(window.getComputedStyle(select(this.el)).width);
+        let nrows = this.terminal.rows;
+        this.terminal.resize(fit_n_cols(available_width), nrows)
+    }
 }
 
 
@@ -243,6 +267,8 @@ function writeError(error) {
 const select = (x, n = 0) => n == -1 ?
     document.querySelectorAll(x) :
     document.querySelectorAll(x)[n];
+
+const parse_px = x => parseInt(x.replace("px", ""));
 
 
 export {

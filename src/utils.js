@@ -20,6 +20,22 @@ const text_to_dom = (x) => {
 }
 
 
+function saveTextToFile(text, filename) {
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+
 // This is needed because WebR v0.1.2 does not support conversion of nested objects
 function flattenObject(obj, prefix = '') {
     const flattened = {};
@@ -39,16 +55,6 @@ function flattenObject(obj, prefix = '') {
 
     return flattened;
 }
-// Example
-// const nestedObject = {
-//     person: {
-//         name: { first: 'John', last: 'Doe' },
-//         age: 30
-//     },
-//     address: { city: 'New York', zip: '10001' }
-// };
-// const flattened = flattenObject(nestedObject);
-// console.log(flattened);
 
 
 export {
@@ -57,5 +63,6 @@ export {
     select,
     blue,
     log,
+    saveTextToFile,
     flattenObject,
 }

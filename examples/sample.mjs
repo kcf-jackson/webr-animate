@@ -14,10 +14,10 @@ let ieditor = new IntegratedEditor("#editor");
 // let editor = ieditor.editor;
 
 
-import { Console, DebugConsole, writeResult, writeError, echoInput } from '../src/terminal.js';
+import { Console, writeResult, writeError, echoInput } from '../src/terminal.js';
 let term = new Console("#terminal", { echo: false });
 term.terminal.resize(80, 16);
-// let dterm = new DebugConsole();
+term.resizeRows();
 
 
 import { Channel } from '../src/channel.js';
@@ -32,27 +32,27 @@ await webR.objs.globalEnv.bind('device', device.env);
 import { blue } from '../src/utils.js'
 
 
-// channel.on(editor, "submit", {
-//     subscriber: kernel,
-//     callback: function (code) {
-//         let cterm = term, cache;
-//         // Handle non-empty current line
-//         cterm.write('\x1b[2K\r');
-//         cterm.write(cterm.prefix);
-//         cterm.write('source("~/.active-document")');
-//         cache = cterm.current_line.slice(cterm.prefix.length);
+channel.on(ieditor, "source-file", {
+    subscriber: kernel,
+    callback: function ({ filename, content: code }) {
+        let cterm = term, cache;
+        // Handle non-empty current line
+        cterm.write('\x1b[2K\r');
+        cterm.write(cterm.prefix);
+        cterm.write('source("~/.active-document")');
+        cache = cterm.current_line.slice(cterm.prefix.length);
 
-//         // console.log(JSON.stringify(code));
-//         this.run(code)
-//             .then(catchAnimate.bind(device))
-//             .then(writeResult.bind(cterm))
-//             .catch(writeError.bind(cterm))
-//             .finally(() => {
-//                 cterm.current_line = cterm.prefix + cache;
-//                 cterm.write(cache)
-//             });
-//     }
-// })
+        // console.log(JSON.stringify(code));
+        this.run(code)
+            .then(catchAnimate.bind(device))
+            .then(writeResult.bind(cterm))
+            .catch(writeError.bind(cterm))
+            .finally(() => {
+                cterm.current_line = cterm.prefix + cache;
+                cterm.write(cache)
+            });
+    }
+})
 
 channel.on(term, "input", {
     subscriber: kernel,
@@ -100,6 +100,13 @@ fetch('../package/R/webr-animate.R')
 //     .then(response => response.text())
 //     .then(x => x.replaceAll("\r\n", "\n"))
 //     .then(text => editor.editor.insert(text))
+
+
+// Resize terminal and editor on window resize
+window.addEventListener('resize', () => {
+    term.resizeRows();
+    ieditor.resizeRows();
+});
 
 
 

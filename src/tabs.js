@@ -1,5 +1,6 @@
 import { Editor } from "./editor.js";
-import { text_to_dom, hide, show } from "./utils.js";
+import { text_to_dom, hide, show, saveTextToFile } from "./utils.js";
+import { PubSub } from "./pubsub.js";
 
 
 class TabsManager {
@@ -7,9 +8,11 @@ class TabsManager {
         this.el = el || "body";
         this.options = options;
         this.root = null;
+        this.PubSub = new PubSub();
         this.init_UI();
+        this.init_events();
 
-        this.open_tabs = [];  // := [{name, content, kernel, dom}]
+        this.open_tabs = [];  // := [{name, header, body}]
         this.active_tab = -1;
     }
 
@@ -34,6 +37,27 @@ class TabsManager {
         this.root = container;
     }
 
+    init_events() {
+        let that = this;
+        this.PubSub.subscribe("receive-editor-submit", () => {
+            let filename = that.current_tab.name;
+            let content = that.current_tab.body.editor.getValue();
+            this.PubSub.publish("source-file", { filename, content });
+        })
+
+        this.PubSub.subscribe("receive-editor-save", () => {
+            let filename = that.current_tab.name;
+            let content = that.current_tab.body.editor.getValue();
+            that.current_tab.content = content;
+            that.PubSub.publish("save-file", { filename: filename, content: content });
+        })
+
+        this.PubSub.subscribe("receive-editor-download", () => {
+            let filename = that.current_tab.name;
+            let content = that.current_tab.body.editor.getValue();
+            saveTextToFile(content, filename);
+        })
+    }
 
 
     get length() {
@@ -63,7 +87,6 @@ class TabsManager {
     selectAll(x) {
         return this.root.querySelectorAll(x);
     }
-
 
 
     openTab(name, content = "") {
@@ -103,6 +126,7 @@ class TabsManager {
 
         // - add the new tab header to the tabs panel
         this.select(".tabs-panel-body").appendChild(tab_header);
+        tab_header.scrollIntoView();
 
 
         // - hide all the tab bodies
@@ -111,6 +135,10 @@ class TabsManager {
 
         // - create and add a new tab body
         let tab_body = new Editor(".inner-editors-panel", this.options);
+        let that = this;
+        tab_body.PubSub.subscribe("submit", () => that.PubSub.publish("receive-editor-submit", null));
+        tab_body.PubSub.subscribe("save", () => that.PubSub.publish("receive-editor-save", null));
+        tab_body.PubSub.subscribe("download", () => that.PubSub.publish("receive-editor-download", null));
         tab_body.root.classList.add("tab-body");
         tab_body.editor.insert(content);
 
