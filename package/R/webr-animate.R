@@ -103,13 +103,12 @@ device$delete = function(id = NULL) {
   device$send(device$Message("fn_delete", list(id = id)))
 }
 
-# WORK FROM HERE
-# Need new channel
 device$event = function(selector, event_type, callback) {
   event_name <- paste0(selector, ":", event_type)
   device$event_handlers[[event_name]] <- callback
   device$send(device$Message("fn_event", list(selector = selector, event = event_type, event_name = event_name)))
 }
+
 
 device$chain = function(callback) {
   # event_name <- paste0("chained-transition-", private$event_counter)

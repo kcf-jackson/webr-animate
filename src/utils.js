@@ -1,4 +1,6 @@
 const blue = (x) => `\x1b[34m${x}\x1b[0m`;
+const hide = x => x.style.display = "none";
+const show = x => x.style.display = "block";
 
 const select = (x, n = 0) => n == -1 ?
     document.querySelectorAll(x) :
@@ -9,16 +11,11 @@ const log = (x) => {
     return x;
 }
 
-const hide = x => x.style.display = "none";
-
-const show = x => x.style.display = "block";
-
 const text_to_dom = (x) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(x, "text/html");
     return doc.body.firstChild;
 }
-
 
 function saveTextToFile(text, filename) {
     const blob = new Blob([text], { type: "text/plain" });
@@ -34,7 +31,6 @@ function saveTextToFile(text, filename) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
-
 
 // This is needed because WebR v0.1.2 does not support conversion of nested objects
 function flattenObject(obj, prefix = '') {

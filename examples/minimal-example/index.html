@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>webR❤️animate</title>
+    <script src="../assets/animate/animate.js"></script>
+    <link href="../assets/xterm/css/xterm.css" rel="stylesheet"/>
+    <script src="../assets/xterm/lib/xterm.js"></script>    
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+  </head>
+  <body>
+    <script type="module" src="sample.mjs"></script>
+    <style> #plot{ outline: none } </style>
+    <div class="container">
+      <div id="plot" tabindex="0">
+        <div id="fullscreen" onclick="toggleFullScreen()">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </div>
+      </div>
+      <div id="terminal"></div>
+      <div id="editor"></div>
+    </div>
+    <script>
+      const toggleFullScreen = () => {
+        const plot = document.getElementById('plot');
+        if (!document.fullscreenElement) {
+          plot.requestFullscreen();
+        } else {
+          document.exitFullscreen && document.exitFullscreen();
+        }
+      }
+    </script>
+  </body>
+</html>

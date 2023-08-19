@@ -18,7 +18,7 @@ class Animate {
                         keyCode: d3.event.keyCode,
                         mouse: d3.mouse(this)
                     };
-                    console.log(result);
+                    // console.log(result);
                     (new webR.RList(flattenObject(result)))
                         .then(x => webR.objs.globalEnv.bind('io', x))
                         .then(() => webR.evalR('io = device$unflattenObject(io)'))
@@ -117,14 +117,11 @@ function getKeyboardEventData(event) {
 }
 
 
-function catchAnimate(x) {  // x := {result, output, error}
-    if (x.result) {
-        console.log(x)
-        x.output
-            .filter(x => x.type == "stdout")
-            .map(x => x.data)
-            .filter(x => x.includes('animate::'))
-            .forEach(x => this.update(x));
+function catchAnimate(x) {  // x := output
+    // console.log(x);
+    if (x.type == "stdout" && x.data.includes('animate::')) {
+        this.update(x.data);
+        return null;
     }
     return x;  // continuation
 }
@@ -151,6 +148,8 @@ const Value = (obj) => {
         } else if (obj.type == "list") {
             let keys = obj.names;
             let values = obj.values;
+            if (!keys) return {};
+
             return keys.reduce((acc, key, i) => {
                 acc[key] = Value(values[i]);
                 return acc;

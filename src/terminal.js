@@ -17,7 +17,7 @@ class Console {
         this.newline = this.options.newline;
         this.prefix = this.options.prefix;
         this.current_line = this.prefix;
-        this.linebreak = -1;
+        this.cache = "";
 
         this.terminal = new Terminal();
         this.terminal.open(select(this.el));
@@ -31,6 +31,7 @@ class Console {
         // Enable hotkeys
         this.terminal.onKey(({ key, domEvent: ev }) => {
             if (ev.keyCode == 13) {  // Enter
+                console.log("Enter: ", this.current_line);
                 let command = this.current_line.slice(this.prefix.length);
                 if (command.trim() == "") {
                     this.write(this.newline);
@@ -38,16 +39,8 @@ class Console {
                     this.current_line = this.prefix;
                     return;
                 }
-                if (this.linebreak >= 0) {
-                    let new_part_only = this.current_line.slice(this.linebreak);
-                    console.log(new_part_only);
-                    this.linebreak = -1;
-                    this.history.push(new_part_only);
-                } else {
-                    this.history.push(command);
-                }
+                this.history.push(command);
                 this.history_index = this.history.length;
-                // console.log(this.history);
                 this.PubSub.publish("input", command);
             } else if (ev.keyCode == 8) {  // Backspace
                 if (this.current_line.length > this.prefix.length) {
@@ -70,7 +63,7 @@ class Console {
                             return;
                         }
                     }
-                    this.current_line = (this.linebreak >= 0 ? "+ " : this.prefix) +
+                    this.current_line = this.current_line.slice(0, this.prefix.length) +
                         this.history[this.history_index];
                     this.write("\x1b[2K\r");
                     this.write(this.current_line);
@@ -86,6 +79,8 @@ class Console {
                     // Check if copy succeeded
                     // .then(() => console.log('Text copied:', selection))
                     // .catch((error) => console.error('Copy failed:', error));
+                } else {
+                    this.PubSub.publish("interrupt");
                 }
             } // handle paste
             else if (ev.keyCode == 86 && ev.ctrlKey) {  // Ctrl+V
@@ -95,7 +90,7 @@ class Console {
                         console.log(clipText);
                         this.paste(clipText);
                     })
-            } else {
+            } else { // normal input
                 this.current_line += key;
                 this.write(key);
             }
@@ -154,115 +149,18 @@ class DebugConsole {
 }
 
 
-function echoInput(input) {
-    if (this.options.echo) {
-        this.write(input);
-        this.write(this.newline);
-        this.write(this.prefix);
-        this.current_line = this.prefix;
-    }
-}
-
-
-function writeResult(exec_result) {
-    let { result, output } = exec_result;
-    // console.log(result);
-
-    if (output.length == 0) {
-        this.write(this.newline);
-        this.write(this.prefix);
-        this.current_line = this.prefix;
-        return;
-    }
-
-    output = group("message")(output);
-    output = group("stdout")(output);
-    output = group("stderr")(output);
-    // console.log(output);
-
-    output.forEach(x => {
-        this.write(this.newline);
-        switch (x.type) {
-            case "stdout":
-            case "stderr":
-                let text = x.data.map(x => x.trimEnd()).join("\n");
-                writeOutputBlock.bind(this)(text);
-                break;
-            case "message":
-                // console.log(x.data);
-                Promise.all(x.data.map(extractMessage))
-                    .then(xs => xs.join("\n\n"))
-                    .then(x => writeOutputBlock.bind(this)(x))
-                break;
-            default:
-                console.warn(`Unhandled output type: ${output.type}.`);
-        }
-    });
-
-    function group(messageType) {
-        return output => {
-            let grouped_output = [];
-            let message_group = { type: messageType, data: [] };
-            output.forEach(x => {
-                if (x.type == messageType) {
-                    message_group.data.push(x.data);
-                } else {
-                    if (message_group.data.length > 0) {
-                        grouped_output.push(message_group);
-                        message_group = { type: messageType, data: [] };
-                    }
-                    grouped_output.push(x);
-                }
-            });
-            if (message_group.data.length > 0) {
-                grouped_output.push(message_group);
-            }
-            return grouped_output;
-        }
-    }
-
-    async function extractMessage(x) {
-        let x_obj = await x.toObject({ depth: 1 }),
-            x_msg = x_obj.message,
-            x_js = await x_msg.toJs({ depth: 0 }),
-            x_val = x_js.values[0].trimEnd();
-        return x_val;
-    }
-
-    function writeOutputBlock(x) {
-        this.write(x);
-        this.write(this.newline);
-        this.write(this.prefix);
-        this.current_line = this.prefix;
-    }
-}
-
-
-function writeError(error) {
-    if (error.message.includes("unexpected end of input")) {
-        this.current_line += "\n";
-        (typeof this.linebreak == 'number') && (this.linebreak = this.current_line.length);
-        this.write(this.newline);
-        this.write("+ ");
-        return;
-    }
-
-    if (error.message.includes("unexpected")) {
-        this.current_line = this.prefix;
-        this.write(this.newline);
-        this.write(error.message.replace("<text>:", "Error: "));
-        this.write(this.newline);
-        this.write(this.prefix);
-        return;
-    }
-
-    this.current_line = this.prefix;
+function writeResult({ type: type, data: output }) {
     this.write(this.newline);
-    this.write("Error: " + error.message);
-    this.write(this.newline);
-    this.write(this.prefix);
+    this.write(output);
+    if (type == "prompt" && this.cache != "") {
+        this.write(this.cache.slice(this.prefix.length));
+        this.current_line = this.cache;
+        this.cache = ""
+        return;
+    }
+    this.current_line = output;
+    return;
 }
-
 
 const select = (x, n = 0) => n == -1 ?
     document.querySelectorAll(x) :
@@ -275,6 +173,4 @@ export {
     Console,
     DebugConsole,
     writeResult,
-    writeError,
-    echoInput,
 }

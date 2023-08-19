@@ -885,7 +885,9 @@ const animate = (function () {
             }
             var cur_device = find_device(self.list_of_device, device_id)
             cur_device.remove("*", null)
-            return remove_device(self.list_of_device, device_id)
+            self.list_of_device = remove_device(self.list_of_device, device_id);
+            d3.select("svg#" + device_id).remove();
+            return self.list_of_device;
         }
         self.plot = function (param) {
             return plot(param, self.device)

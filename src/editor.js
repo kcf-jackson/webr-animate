@@ -47,12 +47,6 @@ class IntegratedEditor {
                 </div>
                 <button class="btn btn-sm btn-primary btn-load" id="btn-load-url">Load</button>
                 <span class="notes">(If more than 1 option is active, the bottom one will be loaded.)</span>
-                <hr>
-                <div id="csv loader" class="loader">
-                    <span>Load CSV</span>
-                    <input type="file" id="csv-input" name="csv-input" />
-                </div>
-                <button class="btn btn-sm btn-primary btn-load" id="btn-load-csv">Load</button>
             </div>
             </dialog>
         `);
@@ -73,19 +67,17 @@ class IntegratedEditor {
                             this.newFileEvent(filename, encoded_data);
                         })
                 } else if (file) {
-
+                    let filename = file.name;
+                    let reader = new FileReader();
+                    reader.onload = (evt) => {
+                        let encoded_data = (new TextEncoder()).encode([evt.target.result]);
+                        this.newFileEvent(filename, encoded_data);
+                    }
+                    reader.readAsText(file);
                 }
                 modal.close();
             }
         });
-        modal.querySelector("#btn-load-csv").addEventListener("click", () => {
-            let file = modal.querySelector("#csv-input").files[0];
-            if (file) {
-                this.loadCSV(file);
-                modal.close();
-            }
-        });
-
 
         // Wrap the dialog for absolute positioning
         let modal_div = text_to_dom(`<div></div>`);

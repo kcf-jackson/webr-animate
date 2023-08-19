@@ -18,6 +18,13 @@ class PubSub {
 
         return this.events[event].map(callback => callback(data));
     }
+
+    unsubscribe(event) {
+        if (!this.events.hasOwnProperty(event)) {
+            return [];
+        }
+        return delete this.events[event];
+    }
 }
 
 export {
