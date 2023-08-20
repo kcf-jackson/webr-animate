@@ -19,19 +19,16 @@ class Kernel {
         for (; ;) {
             const output = await this.webR.read();
             this.PubSub.publish('output', output);
-            switch (output.type) {
-                case 'stdout':
-                case 'stderr':
-                case 'prompt':
-                    console.log(output.data);
-                    break;
-                default:
-                    console.warn(`Unhandled output type: ${output.type}.`);
-            }
+            // switch (output.type) {
+            //     case 'stdout':
+            //     case 'stderr':
+            //     case 'prompt':
+            //         console.log(output.data);
+            //         break;
+            //     default:
+            //         console.warn(`Unhandled output type: ${output.type}.`);
+            // }
         }
-        // .then(catchAnimate.bind(device))
-        //             .then(writeResult.bind(cterm))
-        //             .catch(writeError.bind(cterm));
     };
 }
 

@@ -52,6 +52,27 @@ function flattenObject(obj, prefix = '') {
     return flattened;
 }
 
+// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Throttle function
+function throttle(func, limit) {
+    let lastCallTime = 0;
+    return function (...args) {
+        const now = Date.now();
+        if (now - lastCallTime >= limit) {
+            func.apply(this, args);
+            lastCallTime = now;
+        }
+    };
+}
+
 
 export {
     hide, show,
@@ -61,4 +82,6 @@ export {
     log,
     saveTextToFile,
     flattenObject,
+    debounce,
+    throttle
 }

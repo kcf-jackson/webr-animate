@@ -1,57 +1,132 @@
 import { PubSub } from './pubsub.js';
-import { log, flattenObject } from './utils.js';
+import { log, flattenObject, throttle } from './utils.js';
 
 class Animate {
     constructor(env, io) {
         this.env = env;
+
         this.device = animate.animate();
         let root = this;
         this.device.event = (param) => {
             console.log("Setting up event listener: " + param.event_name)
             d3.selectAll(param.selector)
-                .on(param.event, function (d) {
-                    let result = {
-                        type: "user_event",
-                        param: param,
-                        data: d,
-                        event: getEventData(d3.event),
-                        keyCode: d3.event.keyCode,
-                        mouse: d3.mouse(this)
-                    };
-                    // console.log(result);
-                    (new webR.RList(flattenObject(result)))
-                        .then(x => webR.objs.globalEnv.bind('io', x))
-                        .then(() => webR.evalR('io = device$unflattenObject(io)'))
-                        .then(() => {
-                            let code = `device$event_handlers[["${param.event_name}"]](io)`;
-                            root.PubSub.publish('on-event', code);
-                        });
-                    return true;
-                })
-        }
-        this.PubSub = new PubSub();
-        this.PubSub.subscribe('animate', (msg) => {
-            console.log(msg);
+                .on(param.event, throttle(
+                    function (d) {
+                        let result = {
+                            type: "user_event",
+                            param: param,
+                            data: d,
+                            event: getEventData(d3.event),
+                            keyCode: d3.event.keyCode,
+                            mouse: d3.mouse(this)
+                        };
+                        // console.log(result);
+                        (new webR.RList(flattenObject(result)))
+                            .then(x => webR.objs.globalEnv.bind('io', x))
+                            .then(() => webR.evalR('io = device$unflattenObject(io)'))
+                            .then(() => {
+                                let code = `device$event_handlers[["${param.event_name}"]](io)`;
+                                root.PubSub.publish('on-event', code);
+                            });
+                        return true;
+                    },
+                    100
+                ));
+        };
 
-            let ind = get_id(msg);
-            this.get_data()
-                .then(xs => xs[ind].toObject({ depth: 0 }))
-                .then(x => Value(x))
-                .then(log)
-                .then(x => this.run(x))
+        this.queue = [];
+
+        this.PubSub = new PubSub();
+        this.PubSub.subscribe('animate', async (msg) => {
+            console.log("Animate event");
+            console.log(msg);
+            // let ind = get_id(msg);
+            // this.get_data()
+            //     .then(xs => xs[ind].toObject({ depth: 0 }))
+            //     .then(x => Value(x))
+            //     .then(log)
+            //     .then(x => this.run(x))
         });
+
+        this.dequeue();
+    }
+
+    async dequeue() {
+        // console.log("Enter queue")
+        if (this.queue.length > 0) {
+            // console.log("Queue length (before): " + this.queue.length);
+
+            // let timeoutPromise = new Promise((resolve, reject) => {
+            //     setTimeout(() => reject(new Error('timeout')), 1000);
+            // });
+
+            Promise.all([this.queue.shift(), this.get_data()])
+                .then(([x, xs]) => {
+                    let ind = get_id(x);
+                    return xs[ind].toObject({ depth: 0 });
+                })
+                .then(x => Value(x))
+                .then(x => this.run(x))
+
+
+            // try {
+            //     let x = await this.queue.shift();
+            //     console.log(x);
+
+            //     let xs = await this.get_data(), ind = get_id(x);
+            //     console.log(xs.length);
+            //     console.log(ind);
+
+            //     let cur = await xs[ind].toObject({ depth: 0 });
+            //     console.log(cur);
+
+            //     this.run(Value(cur))
+            // } catch (error) {
+            //     console.log(error);
+            // }
+
+            // console.log("Queue length (after): " + this.queue.length);
+            await this.dequeue();
+        } else {
+            setTimeout(async () => await this.dequeue(), 100);
+        }
     }
 
     update(msg) {
-        // console.log("Message received", msg);
-        this.PubSub.publish('animate', msg);
+        this.queue.push(Promise.resolve(msg));
+        // this.PubSub.publish('animate', msg);
     }
 
-    get_data() {
-        return this.env
-            .toJs({ depth: 1 })
+    async get_data() {
+        // let timeoutPromise = new Promise((resolve, reject) => {
+        //     setTimeout(() => reject(new Error('timeout')), 1000);
+        // });
+
+        // return Promise.race([this.env.toJs({ depth: 1 }), timeoutPromise])
+        return this.env.toJs({ depth: 1 })
+            // .then(log)
             .then(x => x.values[x.names.indexOf('data')])
-            .then(x => x.toArray({ depth: 1 }));
+            .then(x => x.toArray({ depth: 1 }))
+            // .then(log)
+            .catch(error => console.log(error));
+
+        // return this.env
+        //     .toJs({ depth: 1 })
+        //     .then(x => x.values[x.names.indexOf('data')])
+        //     .then(x => x.toArray({ depth: 1 }))
+        //     .catch(error => console.log(error));
+
+        // try {
+        //     let x = await this.env.toJs({ depth: 1 });
+        //     console.log(x);
+        //     let y = x.values[x.names.indexOf('data')];
+        //     console.log(y);
+        //     let z = await y.toArray({ depth: 1 });
+        //     console.log(z);
+        //     return z;
+        // } catch (error) {
+        //     console.log(error);
+        // }
     }
 
     run(x) {

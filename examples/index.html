@@ -21,6 +21,10 @@
                 let result = await webR.evalR('rnorm(10,5,1)');
                 let output = await result.toArray();
                 console.log('Result of running `rnorm` from webR: ', output);
+
+                // let x = await new webR.REnvironment({'a': 1, 'b': 2});
+                // await webR.objs.globalEnv.bind('device', x);
+                // globalThis.x = x;
             }
         );
     </script>    
