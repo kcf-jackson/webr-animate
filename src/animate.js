@@ -40,26 +40,13 @@ class Animate {
         this.PubSub.subscribe('animate', async (msg) => {
             console.log("Animate event");
             console.log(msg);
-            // let ind = get_id(msg);
-            // this.get_data()
-            //     .then(xs => xs[ind].toObject({ depth: 0 }))
-            //     .then(x => Value(x))
-            //     .then(log)
-            //     .then(x => this.run(x))
         });
 
         this.dequeue();
     }
 
     async dequeue() {
-        // console.log("Enter queue")
         if (this.queue.length > 0) {
-            // console.log("Queue length (before): " + this.queue.length);
-
-            // let timeoutPromise = new Promise((resolve, reject) => {
-            //     setTimeout(() => reject(new Error('timeout')), 1000);
-            // });
-
             Promise.all([this.queue.shift(), this.get_data()])
                 .then(([x, xs]) => {
                     let ind = get_id(x);
@@ -67,28 +54,10 @@ class Animate {
                 })
                 .then(x => Value(x))
                 .then(x => this.run(x))
-
-
-            // try {
-            //     let x = await this.queue.shift();
-            //     console.log(x);
-
-            //     let xs = await this.get_data(), ind = get_id(x);
-            //     console.log(xs.length);
-            //     console.log(ind);
-
-            //     let cur = await xs[ind].toObject({ depth: 0 });
-            //     console.log(cur);
-
-            //     this.run(Value(cur))
-            // } catch (error) {
-            //     console.log(error);
-            // }
-
-            // console.log("Queue length (after): " + this.queue.length);
+                .catch(error => console.log(error))
             await this.dequeue();
         } else {
-            setTimeout(async () => await this.dequeue(), 100);
+            setTimeout(async () => await this.dequeue(), 50);
         }
     }
 
@@ -98,35 +67,10 @@ class Animate {
     }
 
     async get_data() {
-        // let timeoutPromise = new Promise((resolve, reject) => {
-        //     setTimeout(() => reject(new Error('timeout')), 1000);
-        // });
-
-        // return Promise.race([this.env.toJs({ depth: 1 }), timeoutPromise])
         return this.env.toJs({ depth: 1 })
-            // .then(log)
             .then(x => x.values[x.names.indexOf('data')])
             .then(x => x.toArray({ depth: 1 }))
-            // .then(log)
             .catch(error => console.log(error));
-
-        // return this.env
-        //     .toJs({ depth: 1 })
-        //     .then(x => x.values[x.names.indexOf('data')])
-        //     .then(x => x.toArray({ depth: 1 }))
-        //     .catch(error => console.log(error));
-
-        // try {
-        //     let x = await this.env.toJs({ depth: 1 });
-        //     console.log(x);
-        //     let y = x.values[x.names.indexOf('data')];
-        //     console.log(y);
-        //     let z = await y.toArray({ depth: 1 });
-        //     console.log(z);
-        //     return z;
-        // } catch (error) {
-        //     console.log(error);
-        // }
     }
 
     run(x) {
