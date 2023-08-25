@@ -6,3 +6,5 @@ build:
 	cp examples/main.mjs _site/main.mjs
 	cp examples/webr-serviceworker.js _site/webr-serviceworker.js
 	cp examples/webr-worker.js _site/webr-worker.js
+	cp -r src _site/src
+	sed 's/\.\.\/src\//src\//g' examples/main.mjs > _site/main.mjs

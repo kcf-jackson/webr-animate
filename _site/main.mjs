@@ -4,32 +4,32 @@ await webR.init();
 console.log(webR);
 
 
-import { Kernel } from '../src/kernel.js';
+import { Kernel } from 'src/kernel.js';
 let kernel = new Kernel(webR);
 
 
-import { Editor, IntegratedEditor } from '../src/editor.js';
+import { Editor, IntegratedEditor } from 'src/editor.js';
 // let editor = new Editor("#editor", { width: "900px", height: "300px" });
 let ieditor = new IntegratedEditor("#editor");
 // let editor = ieditor.editor;
 
 
-import { Console, writeResult } from '../src/terminal.js';
+import { Console, writeResult } from 'src/terminal.js';
 let term = new Console("#terminal", { echo: false });
 term.terminal.resize(80, 16);
 term.resizeRows();
 
 
-import { Channel } from '../src/channel.js';
+import { Channel } from 'src/channel.js';
 let channel = new Channel();
 
 
-import { Animate, catchAnimate } from '../src/animate.js';
+import { Animate, catchAnimate } from 'src/animate.js';
 let device = new Animate(await new webR.REnvironment({}));
 await webR.objs.globalEnv.bind('device', device.env);
 
 
-import { blue } from '../src/utils.js'
+import { blue } from 'src/utils.js'
 
 
 channel.on(ieditor, "source-file", {
