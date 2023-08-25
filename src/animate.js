@@ -30,7 +30,7 @@ class Animate {
                             });
                         return true;
                     },
-                    100
+                    param.throttle || 100
                 ));
         };
 
