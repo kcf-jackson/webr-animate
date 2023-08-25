@@ -1,5 +1,5 @@
 import { WebR } from '@r-wasm/webr';
-import { Kernel } from '../src/kernel.mjs';
+import { Kernel } from '../src/kernel.js';
 
 
 // Set up WebR

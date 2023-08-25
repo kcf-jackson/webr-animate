@@ -1,4 +1,4 @@
-import { PubSub } from '../src/pubsub.js';
+import { PubSub } from './pubsub.js';
 
 class Kernel {
     constructor(webR, options) {

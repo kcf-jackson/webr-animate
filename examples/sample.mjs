@@ -4,7 +4,7 @@ await webR.init();
 console.log(webR);
 
 
-import { Kernel } from '../src/kernel.mjs';
+import { Kernel } from '../src/kernel.js';
 let kernel = new Kernel(webR);
 
 
