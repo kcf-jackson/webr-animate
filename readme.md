@@ -2,27 +2,16 @@
 
 This is an experiment to manually port the [animate](https://github.com/kcf-jackson/animate) R package to [webR](https://github.com/r-wasm/webr/).
 
-The goal is to have a (partially) working version of the `animate` package in the browser until the original package can be compiled natively to WebAssembly and loaded by webR. This is a temporary solution, and not intended for production use.
+The goal is to have a (partially) working version of the `animate` package in the browser until the original package can be compiled natively to WebAssembly and loaded by webR. This is a proof of concept, and not intended for production use.
 
 
-
-## A fun example - Sokoban
-
-
-
+## An example - Sokoban
 
 
 ## Notes
 
 
-1. Interactive events work well, and it can be a lot of fun to play with!
-
-    2048 example here with code link
-
-
-    ### Usage
-
-    The variable `io` is reserved for the webr-animate package to capture mouse and keyboard events. Here is a simple example:
+1. The variable `io` is reserved for the webr-animate package to capture mouse and keyboard events. The variables get updated whenever a registered event gets triggered. Here is an example:
 
 
     #### Mouse events
@@ -38,9 +27,12 @@ The goal is to have a (partially) working version of the `animate` package in th
 
     # Update plot when clicked
     event('#plot', 'click', function(io) {  # the `io` argument must be present
+        print(io)   # inspect the event variable
         points(1:10, sample(10), id = 1:10, transition = TRUE)
     })
     ```
+
+    The first argument of `event` takes a CSS selector, and the second argument takes the event type (e.g. see the [Mouse events](https://developer.mozilla.org/en-US/docs/Web/API/Element#mouse_events) and [Keyboard events](https://developer.mozilla.org/en-US/docs/Web/API/Element#keyboard_events)). The third argument is a function that takes the `io` variable as its argument and performs the desired action.
 
 
     #### Keyboard events
@@ -78,10 +70,10 @@ The goal is to have a (partially) working version of the `animate` package in th
     attach(device)
     ```
 
-    **Note that the `device` and the `io` variables are reserved**, so please do not write to them (though feel free to inspect them). 
+    **Remember that the `device` and `io` variables are reserved**, so please do not write to them. 
 
 
-3. Only keyframes animation is supported at the moment; frame-by-frame animation is not. 
+3. Only keyframes animation is supported at the moment; frame-by-frame animation is not.
 
     <!-- To my knowledge, there isn't a way to make a JavaScript call that accesses the global scope from the R code (as the code execution runs on the worker thread[Note 1]), and also it seems the JavaScript side cannot access the [binded variable](https://docs.r-wasm.org/webr/latest/convert-js-to-r.html#binding-objects-to-an-r-environment) while R is executing, so the data are locked until the end of the R execution. If anyone knows how to do any of the above, please open an issue and let me know. Thank you.
 

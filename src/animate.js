@@ -40,6 +40,12 @@ class Animate {
         this.PubSub.subscribe('animate', async (msg) => {
             console.log("Animate event");
             console.log(msg);
+            let ind = get_id(msg);
+            let data = await this.get_data();
+            data[ind].toObject({ depth: 0 })
+                .then(x => Value(x))
+                .then(x => this.run(x))
+                .catch(error => console.log(error));
         });
 
         this.dequeue();
