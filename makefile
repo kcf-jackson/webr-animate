@@ -8,3 +8,5 @@ build:
 	cp examples/webr-worker.js _site/webr-worker.js
 	cp -r src _site/src
 	sed 's/\.\.\/src\//\.\/src\//g' examples/main.mjs > _site/main.mjs
+	cp -r package _site/package
+	
