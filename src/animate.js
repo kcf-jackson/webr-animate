@@ -38,14 +38,9 @@ class Animate {
 
         this.PubSub = new PubSub();
         this.PubSub.subscribe('animate', async (msg) => {
-            console.log("Animate event");
-            console.log(msg);
-            let ind = get_id(msg);
-            let data = await this.get_data();
-            data[ind].toObject({ depth: 0 })
-                .then(x => Value(x))
-                .then(x => this.run(x))
-                .catch(error => console.log(error));
+            // console.log("Animate event");
+            // console.log(msg);
+            this.run(msg);
         });
 
         this.dequeue();
@@ -68,8 +63,8 @@ class Animate {
     }
 
     update(msg) {
-        this.queue.push(Promise.resolve(msg));
-        // this.PubSub.publish('animate', msg);
+        // this.queue.push(Promise.resolve(msg));
+        this.PubSub.publish('animate', msg);
     }
 
     async get_data() {
@@ -80,7 +75,7 @@ class Animate {
     }
 
     run(x) {
-        x = JSON.parse(JSON.stringify(x), remap_args);
+        x = JSON.parse(x, remap_args);
         this.device.record(x);
         this.device.dispatch(x);
     }
@@ -145,7 +140,7 @@ function getKeyboardEventData(event) {
 function catchAnimate(x) {  // x := output
     // console.log(x);
     if (x.type == "stdout" && x.data.includes('animate::')) {
-        this.update(x.data);
+        this.update(JSON.parse('"' + x.data.slice(14)));
         return null;
     }
     return x;  // continuation

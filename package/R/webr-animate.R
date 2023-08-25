@@ -1,13 +1,16 @@
 # Device definition
 device$Message <- function(type, message) {
-  list(type = type, message = message)
+  # list(type = type, message = message)
+  jsonlite::toJSON(list(type = type, message = message), 
+                   auto_unbox = TRUE)
 }
 
 device$send <- function(msg) {
-  l <- length(device$data)
-  device$data[[l + 1]] <- msg
-  call_id <- gsub(msg$type, pattern = "fn_", replacement = "", fixed = TRUE)
-  print(sprintf("animate::%s-%s", call_id, l))
+  # l <- length(device$data)
+  # device$data[[l + 1]] <- msg
+  # call_id <- gsub(msg$type, pattern = "fn_", replacement = "", fixed = TRUE)
+  # print(sprintf("animate::%s-%s", call_id, l))
+  print(paste0("animate::", msg))
 }
 
 device$data <- list()
