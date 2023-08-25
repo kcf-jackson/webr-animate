@@ -1,6 +1,7 @@
 import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 const webR = new WebR();
 await webR.init();
+await webR.installPackages(['jsonlite']);
 console.log(webR);
 
 
