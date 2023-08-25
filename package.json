@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@r-wasm/webr": "^0.1.1",
+    "@r-wasm/webr": "^0.2.0",
     "xterm": "^5.2.1"
   }
 }

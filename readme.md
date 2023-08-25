@@ -83,6 +83,6 @@ The goal is to have a (partially) working version of the `animate` package in th
 
 3. Only keyframes animation is supported at the moment; frame-by-frame animation is not. 
 
-    To my knowledge, there isn't a way to make a JavaScript call that accesses the global scope from the R code (as the code execution runs on the worker thread[Note 1]), and also it seems the JavaScript side cannot access the [binded variable](https://docs.r-wasm.org/webr/latest/convert-js-to-r.html#binding-objects-to-an-r-environment) while R is executing, so the data are locked until the end of the R execution. If anyone knows how to do any of the above, please open an issue and let me know. Thank you.
+    <!-- To my knowledge, there isn't a way to make a JavaScript call that accesses the global scope from the R code (as the code execution runs on the worker thread[Note 1]), and also it seems the JavaScript side cannot access the [binded variable](https://docs.r-wasm.org/webr/latest/convert-js-to-r.html#binding-objects-to-an-r-environment) while R is executing, so the data are locked until the end of the R execution. If anyone knows how to do any of the above, please open an issue and let me know. Thank you.
 
-    [Note 1] I tried establishing a channel between the worker thread and the global using `postMessage` but failed. Also, for future reference, `eval_js` runs with its own scope.
+    [Note 1] I tried establishing a channel between the worker thread and the global using `postMessage` but failed. Also, for future reference, `eval_js` runs with its own scope. -->
