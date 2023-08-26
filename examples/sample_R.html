@@ -1,19 +1,20 @@
 <html>
   <head>
-    <title>webR❤️animate</title>
+    <title>animate❤️webR</title>
     <script src="./assets/animate/animate.js"></script>
     <script src="./assets/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <link href="../node_modules/xterm/css/xterm.css" rel="stylesheet"/>
-    <script src="../node_modules/xterm/lib/xterm.js"></script>    
+    <link href="./assets/xterm/css/xterm.css" rel="stylesheet"/>
+    <script src="./assets/xterm/lib/xterm.js"></script>    
     <link rel="stylesheet" href="./css/editor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script data-goatcounter="https://kcf-jackson.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   </head>
   <body>
     <script type="module">
       import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 const webR = new WebR();
 await webR.init();
-await webR.installPackages(['jsonlite', 'httpuv']);
+await webR.installPackages(['jsonlite']);
 console.log(webR);
 
 
