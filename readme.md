@@ -24,11 +24,7 @@ Play [live demo]() here.
 
 **Sokoban**
 
-<video controls width="380px" height="380px">
-  <source src="./examples/samples/sokoban/sokoban_screencast.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
+<img src="./examples/samples/sokoban/sokoban_screencast.gif" alt="Sokoban screencast" width="380" height="380">
 
 
 
