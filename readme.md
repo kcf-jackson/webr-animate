@@ -11,10 +11,10 @@ The experiment intends to show how much flexibility and fun one can have when yo
 
 ## Two examples - Sokoban and 2048
 
-Play [live demo]() here. 
+Play [live demo](https://jsonlite--regal-cajeta-ec7fe7.netlify.app/) here. 
 - Click the folder button, select the game from the drop-down menu and source `main.R` to start the game.
 - The app takes about 20-40 seconds to load for the first time.
-- It is highlhy recommended to refresh the app before switching to a different example.
+- It is highly recommended to refresh the app before switching to a different example.
 
 
 **2048**

@@ -42,7 +42,7 @@ event("#reset-text", "click", function(evt) {
   remove(id = "end-game-text")
 })
 
-event("#random-level", "click", function(evt) {
+event("#level-text", "click", function(evt) {
   game$level <- sample(1000, 1)
   game$board <- load_database("database.txt", level = game$level)
   game$end_game <- FALSE
