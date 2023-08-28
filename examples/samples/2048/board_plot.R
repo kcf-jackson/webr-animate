@@ -193,7 +193,7 @@ end_game <- function(board, win) {
 
 # Add keyboard control
 add_keyboard_control <- function() {
-    event("body", "keypress", function(evt) {
+    event("#plot", "keypress", function(evt) {
         print(evt$keyCode)
         if (evt$keyCode == 119) move <- "up"
         if (evt$keyCode == 115) move <- "down"

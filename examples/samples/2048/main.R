@@ -1,6 +1,7 @@
 # Source this file to start the game.
 #
 # See Original @ https://github.com/kcf-jackson/animate#13-2048
+# Source: https://kcf-jackson.github.io/animate/
 # Reference: https://play2048.co/
 # Font: The "Minecraft" font is by NubeFonts @ https://www.fontspace.com/minecraft-ten-font-f40317
 source("board_engine.R")
