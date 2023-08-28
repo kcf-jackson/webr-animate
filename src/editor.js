@@ -66,7 +66,7 @@ class IntegratedEditor {
                     { name: "lorenz", path: "./samples/Lorenz/", files: ["lorenz.R"] },
                     { name: "hilbert", path: "./samples/Hilbert_curve/", files: ["hilbert_curve.R"] },
                     { name: "handdrawn", path: "./samples/hand_drawn/", files: ["handdrawn_plot.R"] },
-                    { name: "sokoban", path: "./samples/sokoban/", files: ["main.R", "engine.R", "render.R", "test_level.txt"] }
+                    { name: "sokoban", path: "./samples/sokoban/", files: ["main.R", "engine.R", "render.R", "test_level.txt", "database.txt", "readme.md"] }
                 ]
                 if (example) {
                     let ind = index.findIndex(x => x.name == example);

@@ -25,6 +25,15 @@ add_reset_button <- function() {
   par(xlim = NULL, ylim = NULL)
 }
 
+add_level_button <- function() {
+  par(xlim = c(0, 5), ylim = c(0, 5))
+  bars(0.85, 5.05, 1.725, 0.3, id = "level-btn", bg = "#eee4da",
+       style = list("stroke" = "black", "stroke-width" = "1px", "cursor" = "pointer"))
+  text(x = 0.9, y = 5.1, "Random Level", id = "level-text",
+       style = list("font-size" = "20px", "font-family" = "Minecraft", "cursor" = "pointer", "user-select" = "none"))
+  par(xlim = NULL, ylim = NULL)
+}
+
 
 # Custom animation
 custom_transition <- function(f, from, to) {

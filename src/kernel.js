@@ -19,15 +19,6 @@ class Kernel {
         for (; ;) {
             const output = await this.webR.read();
             this.PubSub.publish('output', output);
-            // switch (output.type) {
-            //     case 'stdout':
-            //     case 'stderr':
-            //     case 'prompt':
-            //         console.log(output.data);
-            //         break;
-            //     default:
-            //         console.warn(`Unhandled output type: ${output.type}.`);
-            // }
         }
     };
 }

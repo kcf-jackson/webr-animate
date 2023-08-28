@@ -10,7 +10,7 @@ create_board <- function(width, height) {
 }
 
 load_board <- function(path) {
-  lines <- readLines("test_level.txt") |> 
+  lines <- readLines(path) |> 
     gsub(pattern = "_", replacement = " ") |> 
     strsplit("")
   w <- max(nchar(lines))
@@ -18,6 +18,34 @@ load_board <- function(path) {
     stop("Error: board must be rectanguler.")
   }
   do.call(rbind, lines)
+}
+
+load_database <- function(database, level = 1) {
+  has_char <- \(x, c) c %in% strsplit(x, split = "")[[1]]
+  replace_symbols <- function(lines) {
+    result <- lines |>
+      gsub(pattern = "@", replacement = "P", fixed = TRUE) |>
+      gsub(pattern = "$", replacement = "B", fixed = TRUE) |>
+      gsub(pattern = ".", replacement = "T", fixed = TRUE) |>
+      strsplit(split = "")
+    do.call(rbind, result)
+  }
+  db <- readLines(database)
+  
+  counter <- 0
+  buffer <- c()
+  for (line in db) {
+    if (has_char(line, ";")) {
+      if (counter == level) {
+        return(replace_symbols(buffer))
+      }
+      counter <- counter + 1
+      buffer <- c()
+    } else {
+      buffer <- c(buffer, line)
+    }
+  }
+  return(replace_symbols(buffer))
 }
 
 get_player_position <- function(board) {
