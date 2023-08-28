@@ -1,17 +1,42 @@
-# webr x animate
+# webr-animate
 
 This is an experiment to manually port the [animate](https://github.com/kcf-jackson/animate) R package to [webR](https://github.com/r-wasm/webr/).
 
-The goal is to have a (partially) working version of the `animate` package in the browser until the original package can be compiled natively to WebAssembly and loaded by webR. This is a proof of concept, and not intended for production use.
+The goal is to have a (partially) working version of the `animate` package in the browser until the original package can be compiled natively to WebAssembly and loaded by webR. This is a proof of concept, and not intended for production use. 
+
+The experiment intends to show how much flexibility and fun one can have when you can use R in the browser!
 
 
-## An example - Sokoban
+
+
+## Two examples - Sokoban and 2048
+
+Play [live demo]() here. 
+- Click the folder button, select the game from the drop-down menu and source `main.R` to start the game.
+- The app takes about 20-40 seconds to load for the first time.
+- It is highlhy recommended to refresh the app before switching to a different example.
+
+
+**2048**
+
+![2048](./examples/samples/2048/2048_screencast.gif)
+
+
+**Sokoban**
+
+<video controls width="380px" height="380px">
+  <source src="./examples/samples/sokoban/sokoban_screencast.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+
+
 
 
 ## Notes
 
 
-1. The variable `io` is reserved for the webr-animate package to capture mouse and keyboard events. The variables get updated whenever a registered event gets triggered. Here is an example:
+1. **Mouse and Keyboard control.** The variable `io` is reserved for the webr-animate package to capture mouse and keyboard events. The variables get updated whenever a registered event gets triggered. Here is a simple example:
 
 
     #### Mouse events
@@ -58,7 +83,7 @@ The goal is to have a (partially) working version of the `animate` package in th
     ```
 
 
-2. While the usage is the same, there are a couple of discrepancies between the original package and this port. In `webr-animate`, you initialise the device with:
+2. **Differences between `animate` and `webr-animate`.** In `webr-animate`, you initialise the device with:
     ```
     device$new(width = 600, height = 600, id = "svg-1", root = "#plot")
     attach(device)
@@ -71,10 +96,3 @@ The goal is to have a (partially) working version of the `animate` package in th
     ```
 
     **Remember that the `device` and `io` variables are reserved**, so please do not write to them. 
-
-
-3. Only keyframes animation is supported at the moment; frame-by-frame animation is not.
-
-    <!-- To my knowledge, there isn't a way to make a JavaScript call that accesses the global scope from the R code (as the code execution runs on the worker thread[Note 1]), and also it seems the JavaScript side cannot access the [binded variable](https://docs.r-wasm.org/webr/latest/convert-js-to-r.html#binding-objects-to-an-r-environment) while R is executing, so the data are locked until the end of the R execution. If anyone knows how to do any of the above, please open an issue and let me know. Thank you.
-
-    [Note 1] I tried establishing a channel between the worker thread and the global using `postMessage` but failed. Also, for future reference, `eval_js` runs with its own scope. -->
