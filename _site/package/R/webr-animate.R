@@ -2,7 +2,7 @@
 device$Message <- function(type, message) {
   # list(type = type, message = message)
   jsonlite::toJSON(list(type = type, message = message), 
-                   auto_unbox = TRUE)
+                   auto_unbox = TRUE, null = "null")
 }
 
 device$send <- function(msg) {

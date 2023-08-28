@@ -43,6 +43,11 @@ class IntegratedEditor {
                     <span>Load examples</span>
                     <select id="examples-select" name="examples-select">
                     <option value="">None</option>
+                    <option value="lorenz">Lorenz system</option>
+                    <option value="hilbert">Hilbert curve</option>
+                    <option value="handdrawn">Hand-drawn plot</option>
+                    <option value="2048">2048</option>
+                    <option value="sokoban">Sokoban</option>
                     </select>
                 </div>
                 <button class="btn btn-sm btn-primary btn-load" id="btn-load-url">Load</button>
@@ -56,8 +61,30 @@ class IntegratedEditor {
             let url = modal.querySelector("#url-input").value;
             let example = modal.querySelector("#examples-select").value;
             if (file || url || example) {
+                let index = [
+                    { name: "2048", path: "./samples/2048/", files: ["main.R", "animate_effect.R", "board_engine.R", "board_plot.R"] },
+                    { name: "lorenz", path: "./samples/Lorenz/", files: ["lorenz.R"] },
+                    { name: "hilbert", path: "./samples/Hilbert_curve/", files: ["hilbert_curve.R"] },
+                    { name: "handdrawn", path: "./samples/hand_drawn/", files: ["handdrawn_plot.R"] },
+                    { name: "sokoban", path: "./samples/sokoban/", files: ["main.R", "engine.R", "render.R", "test_level.txt", "database.txt", "readme.md"] }
+                ]
                 if (example) {
+                    let ind = index.findIndex(x => x.name == example);
+                    if (ind == -1) {
+                        return console.error("Example not found:", example);
+                    }
 
+                    console.log("Loading example:", example);
+                    let path = index[ind].path;
+                    let files = index[ind].files;
+                    files.forEach(filename => {
+                        fetch(path + filename)
+                            .then(response => response.text())
+                            .then(data => {
+                                let encoded_data = (new TextEncoder()).encode([data]);
+                                this.newFileEvent(filename, encoded_data);
+                            })
+                    })
                 } else if (url) {
                     fetch(url)
                         .then(response => response.text())

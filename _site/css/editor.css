@@ -171,10 +171,6 @@ i.fa-check {
     margin: 0px 4px;
 }
 
-i.fa-check:hover {
-
-}
-
 
 #fullscreen {
     position: absolute;
@@ -185,4 +181,9 @@ i.fa-check:hover {
     font-size: x-large;
     cursor: pointer;
     user-select: none;
+}
+
+@font-face {
+    font-family: 'Minecraft';
+    src: url('./MinecraftTen-VGORe.ttf');
 }
