@@ -4,7 +4,7 @@ This is an experiment to manually port the [animate](https://github.com/kcf-jack
 
 The goal is to have a (partially) working version of the `animate` package in the browser until the original package can be compiled natively to WebAssembly and loaded by webR. This is a proof of concept, and not intended for production use. 
 
-The experiment intends to show how much flexibility and fun one can have when you can use R in the browser!
+The experiment aims to show how much flexibility and fun one can have when you can use R in the browser!
 
 
 
@@ -12,9 +12,9 @@ The experiment intends to show how much flexibility and fun one can have when yo
 ## Two examples - Sokoban and 2048
 
 Play [live demo](https://jsonlite--regal-cajeta-ec7fe7.netlify.app/) here. 
-- Click the folder button, select the game from the drop-down menu and source `main.R` to start the game.
 - The app takes about 20-40 seconds to load for the first time.
-- It is highly recommended to refresh the app before switching to a different example.
+- Click the folder button, select the demo from the drop-down menu and source `main.R` to start.
+- It is recommended to refresh the app before switching to a different example.
 
 
 **2048**
@@ -31,7 +31,7 @@ Play [live demo](https://jsonlite--regal-cajeta-ec7fe7.netlify.app/) here.
 <img src="./examples/samples/sokoban/sokoban_screencast.gif" alt="Sokoban screencast" width="380" height="380">
 
 
-`main_alt.R` - uses game assets by Kenney Vleugels (Kenney.nl) under CC0.
+`main_alt.R` - uses game assets by Kenney Vleugels (Kenney.nl) under CC0 license.
 
 <img src="./examples/samples/sokoban/sokoban_2_screencast.gif" alt="Sokoban screencast" width="380" height="380">
 
