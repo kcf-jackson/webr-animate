@@ -19,22 +19,24 @@ Play [live demo](https://jsonlite--regal-cajeta-ec7fe7.netlify.app/) here.
 
 **2048**
 
-`main.R`
+`examples/samples/2048/main.R` - The "Minecraft Ten" font is by NubeFonts @ https://www.fontspace.com/minecraft-ten-font-f40317
 
 ![2048](./examples/samples/2048/2048_screencast.gif)
 
 
 **Sokoban**
 
-`main.R` - 1000 levels from https://github.com/deepmind/boxoban-levels under Apache-2.0 license.
+`examples/samples/sokoban/main.R` - 1000 levels from https://github.com/deepmind/boxoban-levels under Apache-2.0 license.
 
 <img src="./examples/samples/sokoban/sokoban_screencast.gif" alt="Sokoban screencast" width="380" height="380">
 
 
-`main_alt.R` - uses game assets by Kenney Vleugels (Kenney.nl) under CC0 license.
+`examples/samples/sokoban/main_alt.R` - uses game assets by Kenney Vleugels (Kenney.nl) under CC0 license.
 
 <img src="./examples/samples/sokoban/sokoban_2_screencast.gif" alt="Sokoban screencast" width="380" height="380">
 
+
+More examples can be found under `examples/samples/`. Please see the respective folder for more information regarding the license of the assets used.
 
 
 ## Notes
