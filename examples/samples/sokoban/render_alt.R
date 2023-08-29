@@ -21,6 +21,12 @@ background <- function(x) {
     x
 }
 
+preload_images <- function() {
+    image(href_map(c(" ", "#", "P", "TP", "B", "T", "TB")),
+          x = 0, y = 0, width = 0, height = 0, id = paste("preload", 1:7, sep = "-"))
+}
+
+
 href_map <- function(x) {
   legend <- c(  
     " " = "./samples/sokoban/PNG/Default/Ground/ground_01.png", 

@@ -11,9 +11,9 @@ game$end_game <- FALSE
 print(game$board)
 
 # Initialise `animate`
-# device <- animate::animate$new(500, 500)
 device$new(500, 500, root = "#plot", id = "SVG-1")
 attach(device)
+preload_images()
 draw_background(game$background)
 draw_board(game$board)
 add_reset_button()

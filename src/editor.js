@@ -92,9 +92,6 @@ class IntegratedEditor {
                                 this.newFileEvent(filename, encoded_data);
                             })
                     })
-
-                    // Case specific to Sokoban 2
-                    preloadImages(["./samples/sokoban/PNG/Default/Crates/crate_10.png"])
                 } else if (url) {
                     fetch(url)
                         .then(response => response.text())
