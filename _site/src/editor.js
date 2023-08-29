@@ -1,7 +1,7 @@
 import { FilesManager, randomString } from "./files.js";
 import { PubSub } from "./pubsub.js";
 import { TabsManager } from "./tabs.js";
-import { text_to_dom } from "./utils.js";
+import { text_to_dom, preloadImages } from "./utils.js";
 
 
 class IntegratedEditor {
@@ -92,6 +92,9 @@ class IntegratedEditor {
                                 this.newFileEvent(filename, encoded_data);
                             })
                     })
+
+                    // Case specific to Sokoban 2
+                    preloadImages(["./samples/sokoban/PNG/Default/Crates/crate_10.png"])
                 } else if (url) {
                     fetch(url)
                         .then(response => response.text())

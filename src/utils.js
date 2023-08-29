@@ -17,6 +17,17 @@ const text_to_dom = (x) => {
     return doc.body.firstChild;
 }
 
+function preloadImages(urls) {
+    return Promise.all(urls.map(url => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error(`Failed to load image's URL: ${url}`));
+            img.src = url;
+        });
+    }));
+}
+
 function saveTextToFile(text, filename) {
     const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
