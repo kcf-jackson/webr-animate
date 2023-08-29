@@ -94,5 +94,6 @@ export {
     saveTextToFile,
     flattenObject,
     debounce,
-    throttle
+    throttle,
+    preloadImages
 }
