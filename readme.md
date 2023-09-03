@@ -11,7 +11,7 @@ The experiment aims to show how much flexibility and fun one can have when you c
 
 ## Two examples - Sokoban and 2048
 
-Play [live demo](https://jsonlite--regal-cajeta-ec7fe7.netlify.app/) here. 
+Play [live demo](https://webr-animate.netlify.app/) here. 
 - The app takes about 20-40 seconds to load for the first time.
 - Click the folder button, select the demo from the drop-down menu and source `main.R` to start.
 - It is recommended to refresh the app before switching to a different example.
