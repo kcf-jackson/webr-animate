@@ -6,7 +6,7 @@ await webR.init();
 
 // Load R packages
 // await webR.installPackages(['jsonlite']);
-let PKG_PATH = '../package/';
+let PKG_PATH = '../package';
 let LIB_PATH = '/usr/lib/R/library';
 let packages = ['jsonlite'];
 packages.forEach(async pkg => {
