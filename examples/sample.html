@@ -5,13 +5,41 @@
     <script src="./assets/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <link href="./assets/xterm/css/xterm.css" rel="stylesheet"/>
     <script src="./assets/xterm/lib/xterm.js"></script>    
-    <link rel="stylesheet" href="../css/editor.css">
+    <link rel="stylesheet" href="./css/editor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script data-goatcounter="https://kcf-jackson.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   </head>
   <body>
     <script type="module" src="main.mjs"></script>
-    <style> #plot{ outline: none } </style>
+    <style> 
+    #plot{ outline: none } 
+        /* Center the loading container */
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Create a simple loading spinner */
+    .loading-icon {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    /* Add animation for the spinner */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+    <div class="loading-container">
+      <div class="loading-icon"></div>
+    </div>
     <div class="container">
       <div id="plot" tabindex="0">
         <div id="fullscreen" onclick="toggleFullScreen()">
