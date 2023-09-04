@@ -61,37 +61,8 @@ class IntegratedEditor {
             let url = modal.querySelector("#url-input").value;
             let example = modal.querySelector("#examples-select").value;
             if (file || url || example) {
-                let index = [
-                    { name: "2048", path: "./samples/2048/", files: ["main.R", "animate_effect.R", "board_engine.R", "board_plot.R"] },
-                    { name: "lorenz", path: "./samples/Lorenz/", files: ["lorenz.R"] },
-                    { name: "hilbert", path: "./samples/Hilbert_curve/", files: ["hilbert_curve.R"] },
-                    { name: "handdrawn", path: "./samples/hand_drawn/", files: ["handdrawn_plot.R"] },
-                    {
-                        name: "sokoban",
-                        path: "./samples/sokoban/",
-                        files: [
-                            "main.R", "render.R", "main_alt.R", "render_alt.R", "engine.R",
-                            "test_level.txt", "database.txt", "readme.md"
-                        ]
-                    }
-                ]
                 if (example) {
-                    let ind = index.findIndex(x => x.name == example);
-                    if (ind == -1) {
-                        return console.error("Example not found:", example);
-                    }
-
-                    console.log("Loading example:", example);
-                    let path = index[ind].path;
-                    let files = index[ind].files;
-                    files.forEach(filename => {
-                        fetch(path + filename)
-                            .then(response => response.text())
-                            .then(data => {
-                                let encoded_data = (new TextEncoder()).encode([data]);
-                                this.newFileEvent(filename, encoded_data);
-                            })
-                    })
+                    load_example.bind(this)(example);
                 } else if (url) {
                     fetch(url)
                         .then(response => response.text())
@@ -270,6 +241,39 @@ class IntegratedEditor {
     loadCSV(file) {
         console.log("Load CSV to be implemented")
     }
+}
+
+function load_example(example) {
+    let index = [
+        { name: "2048", path: "./samples/2048/", files: ["main.R", "animate_effect.R", "board_engine.R", "board_plot.R"] },
+        { name: "lorenz", path: "./samples/Lorenz/", files: ["lorenz.R"] },
+        { name: "hilbert", path: "./samples/Hilbert_curve/", files: ["hilbert_curve.R"] },
+        { name: "handdrawn", path: "./samples/hand_drawn/", files: ["handdrawn_plot.R"] },
+        {
+            name: "sokoban",
+            path: "./samples/sokoban/",
+            files: [
+                "main.R", "render.R", "main_alt.R", "render_alt.R", "engine.R",
+                "test_level.txt", "database.txt", "readme.md"
+            ]
+        }
+    ]
+    let ind = index.findIndex(x => x.name == example);
+    if (ind == -1) {
+        return console.error("Example not found:", example);
+    }
+
+    console.log("Loading example:", example);
+    let path = index[ind].path;
+    let files = index[ind].files;
+    files.forEach(filename => {
+        fetch(path + filename)
+            .then(response => response.text())
+            .then(data => {
+                let encoded_data = (new TextEncoder()).encode([data]);
+                this.newFileEvent(filename, encoded_data);
+            })
+    })
 }
 
 
