@@ -1,6 +1,10 @@
+const tic = performance.now();
+
 import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 const webR = new WebR();
 await webR.init();
+
+// Load R packages
 // await webR.installPackages(['jsonlite']);
 let PKG_PATH = '../package/';
 let LIB_PATH = '/usr/lib/R/library';
@@ -26,6 +30,10 @@ packages.forEach(async pkg => {
         });
 })
 console.log(webR);
+
+const toc = performance.now();
+document.querySelector(".loading-container").style.display = "none";
+console.log(`Loaded in ${(toc - tic).toFixed(2)} ms.`);
 
 
 import { Kernel } from './src/kernel.js';
