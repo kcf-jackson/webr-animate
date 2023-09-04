@@ -10,6 +10,7 @@ build:
 	sed 's/\.\.\/src\//\.\/src\//g' examples/main.mjs > _site/main.mjs
 	mkdir -p _site/package/ && cp -r package/R _site/package
 	cp -r package/jsonlite _site/package
+	cp package/jsonlite.json _site/package/jsonlite.json
 
 build-package:
 	cd package && Rscript build_pkg.R
