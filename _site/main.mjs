@@ -1,7 +1,30 @@
 import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
 const webR = new WebR();
 await webR.init();
-await webR.installPackages(['jsonlite']);
+// await webR.installPackages(['jsonlite']);
+let PKG_PATH = '../package/';
+let LIB_PATH = '/usr/lib/R/library';
+let packages = ['jsonlite'];
+packages.forEach(async pkg => {
+    // Create parent directory
+    await webR.evalR(`dir.create('${LIB_PATH}/${pkg}')`);
+
+    // Create subdirectories
+    ['doc', 'help', 'html', 'libs', 'Meta', 'R']
+        .forEach(x => webR.evalR(`dir.create('${LIB_PATH}/${pkg}/${x}')`));
+
+    // Populate package files
+    fetch(`${PKG_PATH}/${pkg}.json`)
+        .then(response => response.json())
+        .then(file => {
+            file.forEach((x, i) => {
+                let asset_url = `${PKG_PATH}/${pkg}/` + x;
+                fetch(asset_url)
+                    .then(response => response.arrayBuffer())
+                    .then(buffer => webR.FS.writeFile(`${LIB_PATH}/${pkg}/` + x, new Uint8Array(buffer)));
+            })
+        });
+})
 console.log(webR);
 
 
