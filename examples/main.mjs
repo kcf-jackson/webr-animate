@@ -33,7 +33,10 @@ console.log(webR);
 
 const toc = performance.now();
 document.querySelector(".loading-container").style.display = "none";
+document.querySelector(".container").style.removeProperty("display");
 console.log(`Loaded in ${(toc - tic).toFixed(2)} ms.`);
+
+
 
 
 import { Kernel } from '../src/kernel.js';
