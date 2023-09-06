@@ -13,10 +13,11 @@ html, body {
 
 .container {
     display: grid;
-    grid-template-columns: 3fr 2fr;
-    grid-template-rows: 3fr 1fr;
-    grid-template-areas: "editor plot"
-                         "terminal plot";
+    grid-template-columns: 3fr auto 2fr;
+    grid-template-rows: 3fr auto 1fr;
+    /* grid-template-areas: "editor v-divider plot"
+                         "h-divider v-divider plot"
+                         "terminal v-divider plot"; */
     height: 100vh;
     width: 100vw;
 }
@@ -24,11 +25,15 @@ html, body {
 #editor {
     grid-area: editor;
     overflow: hidden;
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
 }
 
 #terminal {
     grid-area: terminal;
     overflow: hidden;
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
 }
 
 #plot {
@@ -38,6 +43,28 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    outline: none;
+    grid-column: 3 / 4;
+    grid-row: 1 / 4;
+}
+
+.v-divider {
+    grid-area: v-divider;
+    cursor: col-resize;
+    background-color: #ccc;
+    grid-column: 2 / 3;
+    grid-row: 1 / 4;
+    border: 1px solid #eee;
+}
+
+
+.h-divider {
+    grid-area: h-divider;
+    cursor: row-resize;
+    background-color: #ccc;
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    border: 1px solid #eee;
 }
 
 
@@ -124,11 +151,13 @@ html, body {
 
 .file {
     padding: 4px 0px 4px 12px;
+    user-select: none;
 }
 
 
 .editor-container button {
     margin: 4px;
+    user-select: none;
 }
 
 dialog {
@@ -186,4 +215,32 @@ i.fa-check {
 @font-face {
     font-family: 'Minecraft';
     src: url('./MinecraftTen-VGORe.ttf');
+}
+
+
+
+
+
+/* Center the loading container */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Create a simple loading spinner */
+.loading-icon {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+/* Add animation for the spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

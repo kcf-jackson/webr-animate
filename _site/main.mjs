@@ -6,7 +6,7 @@ await webR.init();
 
 // Load R packages
 // await webR.installPackages(['jsonlite']);
-let PKG_PATH = '../package/';
+let PKG_PATH = '../package';
 let LIB_PATH = '/usr/lib/R/library';
 let packages = ['jsonlite'];
 packages.forEach(async pkg => {
@@ -33,7 +33,10 @@ console.log(webR);
 
 const toc = performance.now();
 document.querySelector(".loading-container").style.display = "none";
+document.querySelector(".container").style.removeProperty("display");
 console.log(`Loaded in ${(toc - tic).toFixed(2)} ms.`);
+
+
 
 
 import { Kernel } from './src/kernel.js';

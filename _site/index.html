@@ -11,36 +11,10 @@
   </head>
   <body>
     <script type="module" src="main.mjs"></script>
-    <style> 
-    #plot{ outline: none } 
-        /* Center the loading container */
-    .loading-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    /* Create a simple loading spinner */
-    .loading-icon {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #3498db;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-    }
-
-    /* Add animation for the spinner */
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    </style>
     <div class="loading-container">
       <div class="loading-icon"></div>
     </div>
-    <div class="container">
+    <div class="container" style="display:none;">
       <div id="plot" tabindex="0">
         <div id="fullscreen" onclick="toggleFullScreen()">
           <i class="fas fa-expand-arrows-alt"></i>
@@ -48,16 +22,9 @@
       </div>
       <div id="terminal"></div>
       <div id="editor"></div>
+      <div class="h-divider" id="h-divider"></div>
+      <div class="v-divider" id="v-divider"></div>
     </div>
-    <script>
-      const toggleFullScreen = () => {
-        const plot = document.getElementById('plot');
-        if (!document.fullscreenElement) {
-          plot.requestFullscreen();
-        } else {
-          document.exitFullscreen && document.exitFullscreen();
-        }
-      }
-    </script>
+    <script src="index.js"></script>
   </body>
 </html>

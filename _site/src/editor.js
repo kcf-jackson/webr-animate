@@ -198,6 +198,7 @@ class IntegratedEditor {
         let filename = tab.getAttribute("data-file-name");
         let content = await this.fs.openFile(filename);
         await this.tabs.openTab(filename, content);
+        this.resizeRows();
     }
 
     async renameFileEvent(ev) {
