@@ -1,7 +1,7 @@
 library(httpuv)
 
 mjs_handler <- function(req) {
-  message("Handling mjs")
+  # message("Handling mjs")
   # print(names(req))
   path <- req$PATH_INFO
   file_path <- file.path(".", path)
