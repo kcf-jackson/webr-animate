@@ -405,5 +405,6 @@ const uid = () => Math.random().toString(36).slice(2);
 
 export {
     Editor,
-    IntegratedEditor
+    IntegratedEditor,
+    load_example
 }

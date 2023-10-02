@@ -11,20 +11,19 @@ The experiment aims to show how much flexibility and fun one can have when you c
 
 ## Two examples - Sokoban and 2048
 
-Play [live demo](https://webr-animate.netlify.app/) here. 
 - The app may take about 10 seconds to load for the first time.
 - Click the folder button, select the demo from the drop-down menu and source `main.R` to start.
 - It is recommended to refresh the app before switching to a different example.
 
 
-**2048**
+**2048** [live demo](https://webr-animate.netlify.app?game=2048)
 
 `examples/samples/2048/main.R` - The "Minecraft Ten" font is by NubeFonts @ https://www.fontspace.com/minecraft-ten-font-f40317
 
 ![2048](./examples/samples/2048/2048_screencast.gif)
 
 
-**Sokoban**
+**Sokoban** [live demo](https://webr-animate.netlify.app?game=sokoban)
 
 `examples/samples/sokoban/main.R` - 1000 levels from https://github.com/deepmind/boxoban-levels under Apache-2.0 license.
 
