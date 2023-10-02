@@ -43,7 +43,7 @@ import { Kernel } from './src/kernel.js';
 let kernel = new Kernel(webR);
 
 
-import { Editor, IntegratedEditor } from './src/editor.js';
+import { Editor, IntegratedEditor, load_example } from './src/editor.js';
 // let editor = new Editor("#editor", { width: "900px", height: "300px" });
 let ieditor = new IntegratedEditor("#editor");
 // let editor = ieditor.editor;
@@ -139,8 +139,9 @@ fetch('../package/R/webr-animate.R')
 
 // Resize terminal and editor on window resize
 window.addEventListener('resize', () => {
-    term.resizeRows();
-    ieditor.resizeRows();
+    const isVisible = x => getComputedStyle(document.querySelector(x.el)).display !== "none";
+    isVisible(term) && term.resizeRows();
+    isVisible(ieditor) && ieditor.resizeRows();
 });
 
 
@@ -158,3 +159,52 @@ globalThis.device = device;
 // Utility functions
 const inspect = x => x.toJs().then(console.log);
 globalThis.inspect = inspect;
+
+
+
+
+//----------------------------------------------------------------------
+// Game-only
+// Get parameters from URL
+const urlParams = new URLSearchParams(window.location.search);
+const game = urlParams.get('game');
+if (game && ['2048', 'sokoban'].includes(game)) {
+    panelLeft.style.display = "none";
+    h_divider.style.display = "none";
+    v_divider.style.display = "none";
+    document.querySelector("#editor").style.display = "none";
+
+    container.style.display = "flex";
+    panelRight.style.height = "100%";
+    panelRight.style.width = "100%";
+
+    load_example.bind(ieditor)(game);
+    if (game === 'sokoban') {
+        setTimeout(() => kernel.run("source('main_alt.R');"), 2000);
+    } else {
+        setTimeout(() => kernel.run("source('main.R');"), 2000);
+    }
+
+    // footer div (absolutely positioned at the bottom)
+    let footer = document.createElement("div");
+    footer.style.position = "absolute";
+    footer.style.bottom = "2%";
+    footer.style.width = "100%";
+    footer.style.textAlign = "center";
+
+    // Add text to footer
+    let footer_text = document.createElement("span");
+    footer_text.innerText = "Use WASD to move. ";
+
+    // Add source link: https://github.com/kcf-jackson/webr-animate
+    let footer_source = document.createElement("a");
+    footer_source.innerText = "Source";
+    footer_source.href = "https://github.com/kcf-jackson/webr-animate";
+    footer_source.target = "_blank";
+    footer_source.rel = "noopener noreferrer";
+
+    // Append footer to container
+    container.appendChild(footer);
+    footer.appendChild(footer_text);
+    footer.appendChild(footer_source);
+}
