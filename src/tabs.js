@@ -41,7 +41,7 @@ class TabsManager {
         let that = this;
         this.PubSub.subscribe("receive-editor-submit", () => {
             let filename = that.current_tab.name;
-            let content = that.current_tab.body.editor.getValue();
+            let content = that.current_tab.body.editor.getValue().replaceAll("\r\n", "\n");
             this.PubSub.publish("source-file", { filename, content });
         })
 
